@@ -674,3 +674,56 @@ function updateColor(rotating_direction, row_column_index) {
     update_to_elem.style.backgroundColor = from_colors[i]
   }
 }
+
+document.addEventListener("mousedown", (e) => {
+  if (e.target.classList.contains("side1") || 
+      e.target.classList.contains("side2") ||  
+      e.target.classList.contains("side3") ||  
+      e.target.classList.contains("side4") ||  
+      e.target.classList.contains("side5") ||  
+      e.target.classList.contains("side6")
+     ) {
+
+    e.target.style.borderColor = 'red'
+    var op = document.querySelector('#operator')
+    op.style.left = e.clientX - op.clientWidth/2 + 'px'
+    op.style.top = e.clientY - op.clientHeight/2 + 'px'
+    //op.style.left = e.clientX  + 'px'
+    //op.style.top = e.clientY  + 'px'
+
+    var cube_transform = window.getComputedStyle(document.querySelector('.cube')).transform
+    if(cube_transform === 'none') {
+      //set to ID matrix
+      cube_transform = 'matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1)'
+    }
+    var side_transform = window.getComputedStyle(e.target).transform
+    if(side_transform === 'none') {
+      //set to ID matrix
+      side_transform = 'matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1)'
+    }
+    var output_arr_matrix = matrix3dProduct (
+      getMatrix3dArrayFromStyle(side_transform), getMatrix3dArrayFromStyle(cube_transform))
+    op.style.transform = 'matrix3d(' + output_arr_matrix.join(', ') + ')'
+  }
+})
+
+function getMatrix3dArrayFromStyle(sytle_string) {
+  var str = sytle_string.replace('matrix3d(', '')
+  var str = str.replace(')', '')
+  return str.split(', ')
+}
+
+function matrix3dProduct(arr_matrix_1, arr_matrix_2){
+  var output_arr_matrix = [];
+  var m1 = arr_matrix_1;
+  var m2 = arr_matrix_2;
+  for(let i=0; i<4; i++) {
+    for(let j=0; j<4; j++) {
+      output_arr_matrix[4*i + j] = m1[4*i + 0] * m2[4*0 + j] + 
+                                   m1[4*i + 1] * m2[4*1 + j] + 
+                                   m1[4*i + 2] * m2[4*2 + j] + 
+                                   m1[4*i + 3] * m2[4*3 + j] 
+    }
+  }
+  return output_arr_matrix
+}
