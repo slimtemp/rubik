@@ -683,38 +683,36 @@ document.addEventListener("mousedown", (e) => {
       e.target.classList.contains("side5") ||  
       e.target.classList.contains("side6")
      ) {
-
-    //console.log(e.target.getBoundingClientRect())
-    //var current_side_rect = e.target.getBoundingClientRect()
       
-    var op = document.querySelector('#operator')
-    op.style.left = e.target.clientLeft + 'px'
-    console.log(e.target.getBoundingClientRect().right)
-    //console.log(e.screenY)
-    op.style.top = e.target.getBoundingClientRect().top + 'px'
-    op.style.left = e.target.getBoundingClientRect().left + 'px'
-    op.style.opacity = '0.5'
-    //op.style.left = e.clientX - op.clientWidth/2 + 'px'
-    //op.style.top = e.clientY - op.clientHeight/2 + 'px'
+    var left_arrow = document.createElement('div')
+    left_arrow.className = 'left arrow'
+    var right_arrow = document.createElement('div')
+    right_arrow.className = 'right arrow'
+    var up_arrow = document.createElement('div')
+    up_arrow.className = 'up arrow'
+    var down_arrow = document.createElement('div')
+    down_arrow.className = 'down arrow'
     
-    //console.log("left:", op.style.left,  current_side_rect.left )
-    //console.log("top:", op.style.top,  current_side_rect.top )
-    //console.log(op.getBoundingClientRect())
-
-    var cube_transform = window.getComputedStyle(document.querySelector('.cube')).transform
-    if(cube_transform === 'none') {
-      //set to ID matrix
-      cube_transform = 'matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1)'
-    }
-    var side_transform = window.getComputedStyle(e.target).transform
-    if(side_transform === 'none') {
-      //set to ID matrix
-      side_transform = 'matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1)'
-    }
-    var output_arr_matrix = matrix3dProduct (
-      getMatrix3dArrayFromStyle(side_transform), getMatrix3dArrayFromStyle(cube_transform))
+    e.target.appendChild(left_arrow)
+    e.target.appendChild(right_arrow)
+    e.target.appendChild(up_arrow)
+    e.target.appendChild(down_arrow)
     
-    //op.style.transform = 'matrix3d(' + output_arr_matrix.join(', ') + ')'
+    //left_arrow.style.transform = 'translate3d(-100px, 0px, 5px)'
+    //right_arrow.style.transform = 'translate3d(100px, 0px, 5px)'
+    //up_arrow.style.transform = 'translate3d(0px, -100px, 5px)'
+    //down_arrow.style.transform = 'translate3d(0px, 100px, 5px)'
+      
+    left_arrow.style.transform = 'translateX(-100px)'
+    right_arrow.style.transform = 'translateX(100px)'
+    up_arrow.style.transform = 'translateY(-100px)'
+    down_arrow.style.transform = 'translateY(100px)'
+      
+    document.querySelector('.cube').style.opacity = '0.8'
+    
+    //console.log(e.target.parentNode.nextElementSibling)
+    //e.target.parentElement.nextElementSibling.getElementsByClassName(e.target.className)[0].style.opacity = '0.2'
+    
   }
 })
 
