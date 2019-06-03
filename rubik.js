@@ -676,6 +676,14 @@ function updateColor(rotating_direction, row_column_index) {
 }
 
 document.addEventListener("mousedown", (e) => {
+  // click outside the cube to hide arrows
+  if(getAllAncestors(e.target).length === 1) {  //only body
+    document.querySelectorAll('.arrow').forEach( function (e) {
+      e.remove()
+    });
+  }
+
+  // show arrows
   if (e.target.classList.contains("side1") || 
       e.target.classList.contains("side2") ||  
       e.target.classList.contains("side3") ||  
@@ -684,6 +692,15 @@ document.addEventListener("mousedown", (e) => {
       e.target.classList.contains("side6")
      ) {
       
+    //remove previous arrows
+    document.querySelectorAll('.arrow').forEach( function (e) {
+      e.remove()
+    });
+    //reset previously set z-index's
+    document.querySelectorAll('div').forEach( function(e) {
+      e.style.zIndex = '0'
+    })
+
     var left_arrow = document.createElement('div')
     left_arrow.className = 'left arrow'
     var right_arrow = document.createElement('div')
@@ -697,24 +714,36 @@ document.addEventListener("mousedown", (e) => {
     e.target.appendChild(right_arrow)
     e.target.appendChild(up_arrow)
     e.target.appendChild(down_arrow)
-    
-    //left_arrow.style.transform = 'translate3d(-100px, 0px, 5px)'
-    //right_arrow.style.transform = 'translate3d(100px, 0px, 5px)'
-    //up_arrow.style.transform = 'translate3d(0px, -100px, 5px)'
-    //down_arrow.style.transform = 'translate3d(0px, 100px, 5px)'
       
     left_arrow.style.transform = 'translateX(-100px)'
     right_arrow.style.transform = 'translateX(100px)'
     up_arrow.style.transform = 'translateY(-100px)'
     down_arrow.style.transform = 'translateY(100px)'
-      
-    document.querySelector('.cube').style.opacity = '0.8'
     
+    // I don't know why the code below works....yet
+    // purpose: pop up 4 arrows
+    if(e.target.parentElement.classList.contains('front') && e.target.className === 'side1') {
+      e.target.parentNode.style.zIndex = '1'
+    } else {
+      e.target.parentNode.style.zIndex = '-1'
+    }
+
     //console.log(e.target.parentNode.nextElementSibling)
     //e.target.parentElement.nextElementSibling.getElementsByClassName(e.target.className)[0].style.opacity = '0.2'
     
   }
 })
+
+function getAllAncestors(elem) {
+  var p = elem;
+  var p_s = [];
+  p_s[0] = p;
+  while(p.tagName.toUpperCase() !== 'BODY'){
+    p = p.parentElement; 
+    p_s[p_s.length] = p;
+  }
+  return p_s;
+}
 
 function getMatrix3dArrayFromStyle(sytle_string) {
   var str = sytle_string.replace('matrix3d(', '')
