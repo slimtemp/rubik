@@ -684,12 +684,22 @@ document.addEventListener("mousedown", (e) => {
       e.target.classList.contains("side6")
      ) {
 
-    e.target.style.borderColor = 'red'
+    //console.log(e.target.getBoundingClientRect())
+    //var current_side_rect = e.target.getBoundingClientRect()
+      
     var op = document.querySelector('#operator')
-    op.style.left = e.clientX - op.clientWidth/2 + 'px'
-    op.style.top = e.clientY - op.clientHeight/2 + 'px'
-    //op.style.left = e.clientX  + 'px'
-    //op.style.top = e.clientY  + 'px'
+    op.style.left = e.target.clientLeft + 'px'
+    console.log(e.target.getBoundingClientRect().right)
+    //console.log(e.screenY)
+    op.style.top = e.target.getBoundingClientRect().top + 'px'
+    op.style.left = e.target.getBoundingClientRect().left + 'px'
+    op.style.opacity = '0.5'
+    //op.style.left = e.clientX - op.clientWidth/2 + 'px'
+    //op.style.top = e.clientY - op.clientHeight/2 + 'px'
+    
+    //console.log("left:", op.style.left,  current_side_rect.left )
+    //console.log("top:", op.style.top,  current_side_rect.top )
+    //console.log(op.getBoundingClientRect())
 
     var cube_transform = window.getComputedStyle(document.querySelector('.cube')).transform
     if(cube_transform === 'none') {
@@ -703,7 +713,8 @@ document.addEventListener("mousedown", (e) => {
     }
     var output_arr_matrix = matrix3dProduct (
       getMatrix3dArrayFromStyle(side_transform), getMatrix3dArrayFromStyle(cube_transform))
-    op.style.transform = 'matrix3d(' + output_arr_matrix.join(', ') + ')'
+    
+    //op.style.transform = 'matrix3d(' + output_arr_matrix.join(', ') + ')'
   }
 })
 
