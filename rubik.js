@@ -902,6 +902,24 @@ function rotateByArrow(arrow_elem) {
   let degreeX = 0, degreeY = 0, degreeZ = 0
   switch(arrow_elem.parentNode.className) {
       case 'side1' :
+        switch(arrow_elem.className){
+            case 'left arrow' :
+              rotate_direction = 'y'
+              degreeY = -90
+              break
+            case 'right arrow' :
+              rotate_direction = 'y'
+              degreeY = 90
+              break
+            case 'up arrow' :
+              rotate_direction = 'x'
+              degreeY = 90
+              break
+            case 'down arrow' :
+              rotate_direction = 'x'
+              degreeY = -90
+              break
+        }
       case 'side6' :
         switch(arrow_elem.className){
             case 'left arrow' :
