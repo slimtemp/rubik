@@ -437,160 +437,6 @@ document.querySelectorAll('.buttons button')[7].addEventListener('click', () =>
         })
 
 
-
-function rotate(rotate_direction, target_row_or_column, degree) {
-  let degreeX = 0, degreeY = 0, degreeZ = 0
-  let target_elems = []
-  if(rotate_direction === 'x') {
-    degreeX = degree
-    if(target_row_or_column === 1) {
-      target_elems = [
-                       document.querySelector('.front.i1') ,
-                       document.querySelector('.front.i4') ,
-                       document.querySelector('.front.i7') ,
-                       document.querySelector('.middle.i1') ,
-                       document.querySelector('.middle.i4') ,
-                       document.querySelector('.middle.i7') ,
-                       document.querySelector('.back.i1') ,
-                       document.querySelector('.back.i4') ,
-                       document.querySelector('.back.i7')
-                     ]
-    } else if(target_row_or_column === 2) {
-      target_elems = [
-                       document.querySelector('.front.i2') ,
-                       document.querySelector('.front.i5') ,
-                       document.querySelector('.front.i8') ,
-                       document.querySelector('.middle.i2') ,
-                       document.querySelector('.middle.i5') ,
-                       document.querySelector('.middle.i8') ,
-                       document.querySelector('.back.i2') ,
-                       document.querySelector('.back.i5') ,
-                       document.querySelector('.back.i8')
-                     ]
-    } else if(target_row_or_column === 3) {
-      target_elems = [
-                       document.querySelector('.front.i3') ,
-                       document.querySelector('.front.i6') ,
-                       document.querySelector('.front.i9') ,
-                       document.querySelector('.middle.i3') ,
-                       document.querySelector('.middle.i6') ,
-                       document.querySelector('.middle.i9') ,
-                       document.querySelector('.back.i3') ,
-                       document.querySelector('.back.i6') ,
-                       document.querySelector('.back.i9')
-                     ]
-    }
-  } else if(rotate_direction === 'y') {
-    degreeY = degree
-    if(target_row_or_column === 1) {
-      target_elems = [
-                       document.querySelector('.front.i1') ,
-                       document.querySelector('.front.i2') ,
-                       document.querySelector('.front.i3') ,
-                       document.querySelector('.middle.i1') ,
-                       document.querySelector('.middle.i2') ,
-                       document.querySelector('.middle.i3') ,
-                       document.querySelector('.back.i1') ,
-                       document.querySelector('.back.i2') ,
-                       document.querySelector('.back.i3')
-                     ]
-    } else if(target_row_or_column === 2) {
-      target_elems = [
-                       document.querySelector('.front.i4') ,
-                       document.querySelector('.front.i5') ,
-                       document.querySelector('.front.i6') ,
-                       document.querySelector('.middle.i4') ,
-                       document.querySelector('.middle.i5') ,
-                       document.querySelector('.middle.i6') ,
-                       document.querySelector('.back.i4') ,
-                       document.querySelector('.back.i5') ,
-                       document.querySelector('.back.i6')
-                     ]
-    } else if(target_row_or_column === 3) {
-      target_elems = [
-                       document.querySelector('.front.i7') ,
-                       document.querySelector('.front.i8') ,
-                       document.querySelector('.front.i9') ,
-                       document.querySelector('.middle.i7') ,
-                       document.querySelector('.middle.i8') ,
-                       document.querySelector('.middle.i9') ,
-                       document.querySelector('.back.i7') ,
-                       document.querySelector('.back.i8') ,
-                       document.querySelector('.back.i9')
-                     ]
-    }
-  } else if(rotate_direction === 'z') {
-    degreeZ = degree
-    if(target_row_or_column === 1) {
-      target_elems = [
-                       document.querySelector('.front.i1') ,
-                       document.querySelector('.front.i2') ,
-                       document.querySelector('.front.i3') ,
-                       document.querySelector('.front.i4') ,
-                       document.querySelector('.front.i5') ,
-                       document.querySelector('.front.i6') ,
-                       document.querySelector('.front.i7') ,
-                       document.querySelector('.front.i8') ,
-                       document.querySelector('.front.i9')
-                     ]
-    } else if(target_row_or_column === 2) {
-      target_elems = [
-                       document.querySelector('.middle.i1') ,
-                       document.querySelector('.middle.i2') ,
-                       document.querySelector('.middle.i3') ,
-                       document.querySelector('.middle.i4') ,
-                       document.querySelector('.middle.i5') ,
-                       document.querySelector('.middle.i6') ,
-                       document.querySelector('.middle.i7') ,
-                       document.querySelector('.middle.i8') ,
-                       document.querySelector('.middle.i9')
-                     ]
-    } else if(target_row_or_column === 3) {
-      target_elems = [
-                       document.querySelector('.back.i1') ,
-                       document.querySelector('.back.i2') ,
-                       document.querySelector('.back.i3') ,
-                       document.querySelector('.back.i4') ,
-                       document.querySelector('.back.i5') ,
-                       document.querySelector('.back.i6') ,
-                       document.querySelector('.back.i7') ,
-                       document.querySelector('.back.i8') ,
-                       document.querySelector('.back.i9')
-                     ]
-    }
-  }
-  
-  let need_reset = false
-  // rotate
-  target_elems.forEach( function(el) {
-    el.style.transformOrigin = getTransformOrigin(el, rotate_direction)
-    let current_degrees = getRotateDegreesFromMatrix3dArray(getMatrix3dArray(el))
-    let current_translations = getTraslationsFromMatrix3dArray(getMatrix3dArray(el))
-    let new_transform = 'translate3d(' +
-                                      current_translations[0] + 'px, ' +
-                                      current_translations[1] + 'px, ' +
-                                      current_translations[2] + 'px) ' +
-                        'rotateX(' + (current_degrees[0] + degreeX) + 'deg) ' +
-                        'rotateY(' + (current_degrees[1] + degreeY) + 'deg) ' +
-                        'rotateZ(' + (current_degrees[2] + degreeZ) + 'deg)'
-    el.style.transition = 'transform 1s linear'
-    el.style.transform = new_transform
-    // if >= 90 degree, need to reset
-    if(current_degrees[0] + degreeX >= 90 || current_degrees[1] + degreeY >= 90 || current_degrees[2] + degreeZ >= 90) {
-      need_reset = true
-    }
-  })
-  // reset
-  if(need_reset) {
-    target_elems[0].addEventListener('transitionend', function handler() {
-      resetCube(target_elems, rotate_direction, target_row_or_column)
-      this.removeEventListener('transitionend', handler)
-    })
-  }
-}
-
-
-
 function resetCube(target_elems, rotate_direction, target_row_or_column, is_clockwise) {
   target_elems.forEach( function(el) {
     el.style.transition = 'transform 0s linear'
@@ -761,12 +607,12 @@ document.addEventListener("mousedown", (e) => {
             // not showing new arrows
             f_show_arrows = false
         
-            console.log('clientX: ', e.clientX)
-            console.log('clientY: ', e.clientY)
-            console.log('left_arrow_rect.left: ', left_arrow_rect.left )
-            console.log('left_arrow_rect.right: ', left_arrow_rect.right)
-            console.log('left_arrow_rect.top: ', left_arrow_rect.top)
-            console.log('left_arrow_rect.bottom : ', left_arrow_rect.bottom )
+            //console.log('clientX: ', e.clientX)
+            //console.log('clientY: ', e.clientY)
+            //console.log('left_arrow_rect.left: ', left_arrow_rect.left )
+            //console.log('left_arrow_rect.right: ', left_arrow_rect.right)
+            //console.log('left_arrow_rect.top: ', left_arrow_rect.top)
+            //console.log('left_arrow_rect.bottom : ', left_arrow_rect.bottom )
     } else if(
        e.clientX >= right_arrow_rect.left &&
        e.clientX <= right_arrow_rect.right &&
@@ -777,13 +623,6 @@ document.addEventListener("mousedown", (e) => {
             rotateByArrow(document.getElementsByClassName('right arrow')[0])
             // not showing new arrows
             f_show_arrows = false
-        
-            console.log('clientX: ', e.clientX)
-            console.log('clientY: ', e.clientY)
-            console.log('right_arrow_rect.left: ', right_arrow_rect.left )
-            console.log('right_arrow_rect.right: ', right_arrow_rect.right)
-            console.log('right_arrow_rect.top: ', right_arrow_rect.top)
-            console.log('right_arrow_rect.bottom : ', right_arrow_rect.bottom )
     } else if(
        e.clientX >= up_arrow_rect.left &&
        e.clientX <= up_arrow_rect.right &&
@@ -794,13 +633,6 @@ document.addEventListener("mousedown", (e) => {
             rotateByArrow(document.getElementsByClassName('up arrow')[0])
             // not showing new arrows
             f_show_arrows = false
-        
-            console.log('clientX: ', e.clientX)
-            console.log('clientY: ', e.clientY)
-            console.log('up_arrow_rect.left: ', up_arrow_rect.left )
-            console.log('up_arrow_rect.right: ', up_arrow_rect.right)
-            console.log('up_arrow_rect.top: ', up_arrow_rect.top)
-            console.log('up_arrow_rect.bottom : ', up_arrow_rect.bottom )
     } else if(
        e.clientX >= down_arrow_rect.left &&
        e.clientX <= down_arrow_rect.right &&
@@ -811,13 +643,6 @@ document.addEventListener("mousedown", (e) => {
             rotateByArrow(document.getElementsByClassName('down arrow')[0])
             // not showing new arrows
             f_show_arrows = false
-        
-            console.log('clientX: ', e.clientX)
-            console.log('clientY: ', e.clientY)
-            console.log('down_arrow_rect.left: ', down_arrow_rect.left )
-            console.log('down_arrow_rect.right: ', down_arrow_rect.right)
-            console.log('down_arrow_rect.top: ', down_arrow_rect.top)
-            console.log('down_arrow_rect.bottom : ', down_arrow_rect.bottom )
     }
   }   
   if(f_show_arrows === true) showArrows(e)
@@ -1188,8 +1013,8 @@ function getAllAncestors(elem) {
 
 
 
-function getMatrix3dArrayFromStyle(sytle_string) {
-  var str = sytle_string.replace('matrix3d(', '')
+function getMatrix3dArrayFromStyle(style_string) {
+  var str = style_string.replace('matrix3d(', '')
   var str = str.replace(')', '')
   return str.split(', ')
 }
@@ -1209,4 +1034,38 @@ function matrix3dProduct(arr_matrix_1, arr_matrix_2){
     }
   }
   return output_arr_matrix
+}
+
+
+
+function rotate3d_to_matrix3d(x1, y1, z1, deg) {
+  //get unit vector
+  var vector_length = Math.sqrt(x1 * x1 + y1 * y1 + z1 * z1)
+  var x = x1 / vector_length
+  var y = y1 / vector_length
+  var z = z1 / vector_length
+
+  let r = Math.PI * deg / 180  // radian
+  let m11 = 1 + (1 - Math.cos(r)) * (x * x - 1)
+  let m12 = z * Math.sin(r) + x * y * (1 - Math.cos(r))
+  let m13 = 0 - y * Math.sin(r) + x * z * (1- Math.cos(r))
+  let m14 = 0
+  let m21 = 0 - z * Math.sin(r) + x * y * (1 - Math.cos(r))
+  let m22 = 1 + (1 - Math.cos(r)) * (y * y - 1)
+  let m23 = x * Math.sin(r) + y * z * (1 - Math.cos(r))
+  let m24 = 0
+  let m31 = y * Math.sin(r) + x * z * (1 - Math.cos(r))
+  let m32 = 0 - x * Math.sin(r) + y * z * (1 - Math.cos(r))
+  let m33 = 1 + (1 - Math.cos(r)) * (z * z - 1 )
+  let m34 = 0
+  let m41 = 0
+  let m42 = 0
+  let m43 = 0
+  let m44 = 1
+
+  return 'matrix3d(' + m11 + ', ' + m12 + ', ' + m13 + ', ' + m14 + ', ' 
+                     + m21 + ', ' + m22 + ', ' + m23 + ', ' + m24 + ', ' 
+                     + m31 + ', ' + m32 + ', ' + m33 + ', ' + m34 + ', ' 
+                     + m41 + ', ' + m42 + ', ' + m43 + ', ' + m44 + ', '   
+                     + ')'
 }
