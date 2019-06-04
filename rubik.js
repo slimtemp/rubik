@@ -742,7 +742,90 @@ document.addEventListener("mousedown", (e) => {
       e.remove()
     });
   }
+    
+  // another way to click 4 arrows
+  let f_show_arrows = true
+  if(document.getElementsByClassName('left arrow').length > 0) {   //arrows exist
+    let left_arrow_rect = document.getElementsByClassName('left arrow')[0].getBoundingClientRect()
+    let right_arrow_rect = document.getElementsByClassName('right arrow')[0].getBoundingClientRect()
+    let up_arrow_rect = document.getElementsByClassName('up arrow')[0].getBoundingClientRect()
+    let down_arrow_rect = document.getElementsByClassName('down arrow')[0].getBoundingClientRect()
+    
+    if(e.clientX >= left_arrow_rect.left &&
+       e.clientX <= left_arrow_rect.right &&
+       e.clientY >= left_arrow_rect.top &&
+       e.clientY <= left_arrow_rect.bottom 
+      ) {
+            // click within left arrow
+            rotateByArrow(document.getElementsByClassName('left arrow')[0])
+            // not showing new arrows
+            f_show_arrows = false
+        
+            console.log('clientX: ', e.clientX)
+            console.log('clientY: ', e.clientY)
+            console.log('left_arrow_rect.left: ', left_arrow_rect.left )
+            console.log('left_arrow_rect.right: ', left_arrow_rect.right)
+            console.log('left_arrow_rect.top: ', left_arrow_rect.top)
+            console.log('left_arrow_rect.bottom : ', left_arrow_rect.bottom )
+    } else if(
+       e.clientX >= right_arrow_rect.left &&
+       e.clientX <= right_arrow_rect.right &&
+       e.clientY >= right_arrow_rect.top &&
+       e.clientY <= right_arrow_rect.bottom 
+      ) {
+            // click within right arrow
+            rotateByArrow(document.getElementsByClassName('right arrow')[0])
+            // not showing new arrows
+            f_show_arrows = false
+        
+            console.log('clientX: ', e.clientX)
+            console.log('clientY: ', e.clientY)
+            console.log('right_arrow_rect.left: ', right_arrow_rect.left )
+            console.log('right_arrow_rect.right: ', right_arrow_rect.right)
+            console.log('right_arrow_rect.top: ', right_arrow_rect.top)
+            console.log('right_arrow_rect.bottom : ', right_arrow_rect.bottom )
+    } else if(
+       e.clientX >= up_arrow_rect.left &&
+       e.clientX <= up_arrow_rect.right &&
+       e.clientY >= up_arrow_rect.top &&
+       e.clientY <= up_arrow_rect.bottom 
+      ) {
+            // click within up arrow
+            rotateByArrow(document.getElementsByClassName('up arrow')[0])
+            // not showing new arrows
+            f_show_arrows = false
+        
+            console.log('clientX: ', e.clientX)
+            console.log('clientY: ', e.clientY)
+            console.log('up_arrow_rect.left: ', up_arrow_rect.left )
+            console.log('up_arrow_rect.right: ', up_arrow_rect.right)
+            console.log('up_arrow_rect.top: ', up_arrow_rect.top)
+            console.log('up_arrow_rect.bottom : ', up_arrow_rect.bottom )
+    } else if(
+       e.clientX >= down_arrow_rect.left &&
+       e.clientX <= down_arrow_rect.right &&
+       e.clientY >= down_arrow_rect.top &&
+       e.clientY <= down_arrow_rect.bottom 
+      ) {
+            // click within down arrow
+            rotateByArrow(document.getElementsByClassName('down arrow')[0])
+            // not showing new arrows
+            f_show_arrows = false
+        
+            console.log('clientX: ', e.clientX)
+            console.log('clientY: ', e.clientY)
+            console.log('down_arrow_rect.left: ', down_arrow_rect.left )
+            console.log('down_arrow_rect.right: ', down_arrow_rect.right)
+            console.log('down_arrow_rect.top: ', down_arrow_rect.top)
+            console.log('down_arrow_rect.bottom : ', down_arrow_rect.bottom )
+    }
+  }   
+  if(f_show_arrows === true) showArrows(e)
+})
 
+
+
+function showArrows(e) {
   // show arrows
   if (e.target.classList.contains("side1") || 
       e.target.classList.contains("side2") ||  
@@ -789,13 +872,15 @@ document.addEventListener("mousedown", (e) => {
     }
       
     // add event listener to arrows
+      /*
     document.querySelectorAll('.arrow').forEach(function (el) {
       el.addEventListener('mousedown', function (e) {
         rotateByArrow(e.target)
       })
     })
+      */
   }
-})
+}
 
 
 
@@ -1094,7 +1179,8 @@ function getAllAncestors(elem) {
   var p_s = [];
   p_s[0] = p;
   while(p.tagName.toUpperCase() !== 'BODY'){
-    p = p.parentElement; 
+    p = p.parentNode; 
+    if(p == null) break
     p_s[p_s.length] = p;
   }
   return p_s;
