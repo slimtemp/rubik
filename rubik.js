@@ -1019,7 +1019,9 @@ function getMatrix3dArrayFromStyle(style_string) {
   return str.split(', ')
 }
 
-
+function getStyleFromMatrix3dArray(arr_matrix) {
+  return 'matrix3d(' + arr_matrix.join(',') + ')'
+}
 
 function matrix3dProduct(arr_matrix_1, arr_matrix_2){
   var output_arr_matrix = [];
@@ -1066,6 +1068,5 @@ function rotate3d_to_matrix3d(x1, y1, z1, deg) {
   return 'matrix3d(' + m11 + ', ' + m12 + ', ' + m13 + ', ' + m14 + ', ' 
                      + m21 + ', ' + m22 + ', ' + m23 + ', ' + m24 + ', ' 
                      + m31 + ', ' + m32 + ', ' + m33 + ', ' + m34 + ', ' 
-                     + m41 + ', ' + m42 + ', ' + m43 + ', ' + m44 + ', '   
-                     + ')'
+                     + m41 + ', ' + m42 + ', ' + m43 + ', ' + m44 + ')'
 }
