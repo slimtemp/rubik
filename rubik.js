@@ -361,27 +361,52 @@ var color_change_matrix_90_deg = {
 // plus 1 button
 document.querySelectorAll('.buttons button')[0].addEventListener('click', () =>
         { document.querySelector('#degree').value = 1
-          rotate()
+          // rotating direction is 'x', 'y' or 'z' only
+          let rotate_direction = document.querySelector('#direction').value
+          // target row or column is '1', '2' or '3' only
+          let target_row_or_column = parseInt(document.querySelector('#row_col').value)
+          let degree = parseInt(document.querySelector('#degree').value)
+          rotate(rotate_direction, target_row_or_column, degree)
         })
 // minus 1 button
 document.querySelectorAll('.buttons button')[1].addEventListener('click', () =>
         { document.querySelector('#degree').value = -1
-          rotate()
+          // rotating direction is 'x', 'y' or 'z' only
+          let rotate_direction = document.querySelector('#direction').value
+          // target row or column is '1', '2' or '3' only
+          let target_row_or_column = parseInt(document.querySelector('#row_col').value)
+          let degree = parseInt(document.querySelector('#degree').value)
+          rotate(rotate_direction, target_row_or_column, degree)
         })
 // plus 10 button
 document.querySelectorAll('.buttons button')[2].addEventListener('click', () =>
         { document.querySelector('#degree').value = 10
-          rotate()
+          // rotating direction is 'x', 'y' or 'z' only
+          let rotate_direction = document.querySelector('#direction').value
+          // target row or column is '1', '2' or '3' only
+          let target_row_or_column = parseInt(document.querySelector('#row_col').value)
+          let degree = parseInt(document.querySelector('#degree').value)
+          rotate(rotate_direction, target_row_or_column, degree)
         })
 // minus 10 button
 document.querySelectorAll('.buttons button')[3].addEventListener('click', () =>
         { document.querySelector('#degree').value = -10
-          rotate()
+          // rotating direction is 'x', 'y' or 'z' only
+          let rotate_direction = document.querySelector('#direction').value
+          // target row or column is '1', '2' or '3' only
+          let target_row_or_column = parseInt(document.querySelector('#row_col').value)
+          let degree = parseInt(document.querySelector('#degree').value)
+          rotate(rotate_direction, target_row_or_column, degree)
         })
 // rotate 90 button
 document.querySelectorAll('.buttons button')[4].addEventListener('click', () => 
         { document.querySelector('#degree').value = 90
-          rotate()
+          // rotating direction is 'x', 'y' or 'z' only
+          let rotate_direction = document.querySelector('#direction').value
+          // target row or column is '1', '2' or '3' only
+          let target_row_or_column = parseInt(document.querySelector('#row_col').value)
+          let degree = parseInt(document.querySelector('#degree').value)
+          rotate(rotate_direction, target_row_or_column, degree)
         })
 // get current degrees button
 document.querySelectorAll('.buttons button')[5].addEventListener('click', () => 
@@ -403,15 +428,17 @@ document.querySelectorAll('.buttons button')[6].addEventListener('click', () =>
 // rotate any degree
 document.querySelectorAll('.buttons button')[7].addEventListener('click', () =>
         {
-          rotate()
+          // rotating direction is 'x', 'y' or 'z' only
+          let rotate_direction = document.querySelector('#direction').value
+          // target row or column is '1', '2' or '3' only
+          let target_row_or_column = parseInt(document.querySelector('#row_col').value)
+          let degree = parseInt(document.querySelector('#degree').value)
+          rotate(rotate_direction, target_row_or_column, degree)
         })
 
-function rotate() {
-  // rotating direction is 'x', 'y' or 'z' only
-  let rotate_direction = document.querySelector('#direction').value
-  // target row or column is '1', '2' or '3' only
-  let target_row_or_column = parseInt(document.querySelector('#row_col').value)
-  let degree = parseInt(document.querySelector('#degree').value)
+
+
+function rotate(rotate_direction, target_row_or_column, degree) {
   let degreeX = 0, degreeY = 0, degreeZ = 0
   let target_elems = []
   if(rotate_direction === 'x') {
@@ -562,6 +589,8 @@ function rotate() {
   }
 }
 
+
+
 function resetCube(target_elems, rotate_direction, target_row_or_column) {
   target_elems.forEach( function(el) {
     el.style.transition = 'transform 0s linear'
@@ -579,6 +608,8 @@ function resetCube(target_elems, rotate_direction, target_row_or_column) {
   updateColor(rotate_direction, target_row_or_column)
 }
 
+
+
 function getTransformOrigin(el, rotate_direction) {
   let cn = el.className
   let block_index = parseInt(cn.substring(cn.length-1)) - 1
@@ -592,6 +623,8 @@ function getTransformOrigin(el, rotate_direction) {
     return transform_origin_matrix.back[block_index][direction_index]
   }
 }
+
+
 
 function getMatrix3dArray(el) {
   let el_style = window.getComputedStyle(el)
@@ -613,12 +646,16 @@ function getMatrix3dArray(el) {
   return values.map(x => x - 0)
 }
 
+
+
 function getArrayFromMatrixString(matrix_string) {
   matrix_string = matrix_string.replace('matrix3d(', '')
   matrix_string = matrix_string.replace('matrix(', '')
   matrix_string = matrix_string.replace(')', '')
   return matrix_string.split(',')
 }
+
+
 
 // this function is only for the patterns :
 // rotate3d(1, 0, 0, degree) - rotateX
@@ -646,9 +683,13 @@ function getRotateDegreesFromMatrix3dArray(matrix3d_arr) {
   return degree_values
 }
 
+
+
 function getTraslationsFromMatrix3dArray(matrix3d_arr) {
   return [matrix3d_arr[12], matrix3d_arr[13], matrix3d_arr[14]]
 }
+
+
 
 function getCurrentDegrees() {
   let obj_blocks = document.querySelectorAll('.cube > div')
@@ -659,6 +700,8 @@ function getCurrentDegrees() {
            }
   })
 }
+
+
 
 function updateColor(rotating_direction, row_column_index) {
   let color_change_array = color_change_matrix_90_deg[rotating_direction + row_column_index]
@@ -674,6 +717,8 @@ function updateColor(rotating_direction, row_column_index) {
     update_to_elem.style.backgroundColor = from_colors[i]
   }
 }
+
+
 
 document.addEventListener("mousedown", (e) => {
   // click outside the cube to hide arrows
@@ -715,9 +760,9 @@ document.addEventListener("mousedown", (e) => {
     e.target.appendChild(up_arrow)
     e.target.appendChild(down_arrow)
       
-    left_arrow.style.transform = 'translateX(-100px)'
+    left_arrow.style.transform = 'translateX(-50px)'
     right_arrow.style.transform = 'translateX(100px)'
-    up_arrow.style.transform = 'translateY(-100px)'
+    up_arrow.style.transform = 'translateY(-50px)'
     down_arrow.style.transform = 'translateY(100px)'
     
     // I don't know why the code below works....yet
@@ -727,12 +772,241 @@ document.addEventListener("mousedown", (e) => {
     } else {
       e.target.parentNode.style.zIndex = '-1'
     }
-
-    //console.log(e.target.parentNode.nextElementSibling)
-    //e.target.parentElement.nextElementSibling.getElementsByClassName(e.target.className)[0].style.opacity = '0.2'
-    
+      
+    // add event listener to arrows
+    document.querySelectorAll('.arrow').forEach(function (el) {
+      el.addEventListener('mousedown', function (e) {
+        rotateByArrow(e.target)
+      })
+    })
   }
 })
+
+
+
+function rotateByArrow(arrow_elem) {
+  let all_elems = {}
+  all_elems.x = []
+  all_elems.y = []
+  all_elems.z = []
+  all_elems.x = [
+      [
+       document.querySelector('.front.i1') ,
+       document.querySelector('.front.i4') ,
+       document.querySelector('.front.i7') ,
+       document.querySelector('.middle.i1') ,
+       document.querySelector('.middle.i4') ,
+       document.querySelector('.middle.i7') ,
+       document.querySelector('.back.i1') ,
+       document.querySelector('.back.i4') ,
+       document.querySelector('.back.i7')
+     ],
+      [
+       document.querySelector('.front.i2') ,
+       document.querySelector('.front.i5') ,
+       document.querySelector('.front.i8') ,
+       document.querySelector('.middle.i2') ,
+       document.querySelector('.middle.i5') ,
+       document.querySelector('.middle.i8') ,
+       document.querySelector('.back.i2') ,
+       document.querySelector('.back.i5') ,
+       document.querySelector('.back.i8')
+     ],
+      [
+       document.querySelector('.front.i3') ,
+       document.querySelector('.front.i6') ,
+       document.querySelector('.front.i9') ,
+       document.querySelector('.middle.i3') ,
+       document.querySelector('.middle.i6') ,
+       document.querySelector('.middle.i9') ,
+       document.querySelector('.back.i3') ,
+       document.querySelector('.back.i6') ,
+       document.querySelector('.back.i9')
+     ]
+  ]
+    
+  all_elems.y = [
+      [
+       document.querySelector('.front.i1') ,
+       document.querySelector('.front.i2') ,
+       document.querySelector('.front.i3') ,
+       document.querySelector('.middle.i1') ,
+       document.querySelector('.middle.i2') ,
+       document.querySelector('.middle.i3') ,
+       document.querySelector('.back.i1') ,
+       document.querySelector('.back.i2') ,
+       document.querySelector('.back.i3')
+     ],
+      [
+       document.querySelector('.front.i4') ,
+       document.querySelector('.front.i5') ,
+       document.querySelector('.front.i6') ,
+       document.querySelector('.middle.i4') ,
+       document.querySelector('.middle.i5') ,
+       document.querySelector('.middle.i6') ,
+       document.querySelector('.back.i4') ,
+       document.querySelector('.back.i5') ,
+       document.querySelector('.back.i6')
+     ],
+      [
+       document.querySelector('.front.i7') ,
+       document.querySelector('.front.i8') ,
+       document.querySelector('.front.i9') ,
+       document.querySelector('.middle.i7') ,
+       document.querySelector('.middle.i8') ,
+       document.querySelector('.middle.i9') ,
+       document.querySelector('.back.i7') ,
+       document.querySelector('.back.i8') ,
+       document.querySelector('.back.i9')
+     ]
+  ]
+
+  all_elems.z = [
+      [
+       document.querySelector('.front.i1') ,
+       document.querySelector('.front.i2') ,
+       document.querySelector('.front.i3') ,
+       document.querySelector('.front.i4') ,
+       document.querySelector('.front.i5') ,
+       document.querySelector('.front.i6') ,
+       document.querySelector('.front.i7') ,
+       document.querySelector('.front.i8') ,
+       document.querySelector('.front.i9')
+     ],
+      [
+       document.querySelector('.middle.i1') ,
+       document.querySelector('.middle.i2') ,
+       document.querySelector('.middle.i3') ,
+       document.querySelector('.middle.i4') ,
+       document.querySelector('.middle.i5') ,
+       document.querySelector('.middle.i6') ,
+       document.querySelector('.middle.i7') ,
+       document.querySelector('.middle.i8') ,
+       document.querySelector('.middle.i9')
+     ],
+      [
+       document.querySelector('.back.i1') ,
+       document.querySelector('.back.i2') ,
+       document.querySelector('.back.i3') ,
+       document.querySelector('.back.i4') ,
+       document.querySelector('.back.i5') ,
+       document.querySelector('.back.i6') ,
+       document.querySelector('.back.i7') ,
+       document.querySelector('.back.i8') ,
+       document.querySelector('.back.i9')
+     ]
+  ]
+  
+  // determine rotate_direction and degreeX, degreeY, degreeZ
+  let rotate_direction
+  let degreeX = 0, degreeY = 0, degreeZ = 0
+  switch(arrow_elem.parentNode.className) {
+      case 'side1' :
+      case 'side6' :
+        switch(arrow_elem.className){
+            case 'left arrow' :
+              rotate_direction = 'y'
+              degreeY = 90
+              break
+            case 'right arrow' :
+              rotate_direction = 'y'
+              degreeY = -90
+              break
+            case 'up arrow' :
+              rotate_direction = 'x'
+              degreeY = 90
+              break
+            case 'down arrow' :
+              rotate_direction = 'x'
+              degreeY = -90
+              break
+        }
+        break
+      case 'side2' :
+      case 'side3' :
+        switch(arrow_elem.className){
+            case 'left arrow' :
+              rotate_direction = 'z'
+              degreeY = 90
+              break
+            case 'right arrow' :
+              rotate_direction = 'z'
+              degreeY = -90
+              break
+            case 'up arrow' :
+              rotate_direction = 'x'
+              degreeY = 90
+              break
+            case 'down arrow' :
+              rotate_direction = 'x'
+              degreeY = -90
+              break
+        }
+        break
+      case 'side4' :
+      case 'side5' :
+        switch(arrow_elem.className){
+            case 'left arrow' :
+              rotate_direction = 'y'
+              degreeY = 90
+              break
+            case 'right arrow' :
+              rotate_direction = 'y'
+              degreeY = -90
+              break
+            case 'up arrow' :
+              rotate_direction = 'z'
+              degreeY = 90
+              break
+            case 'down arrow' :
+              rotate_direction = 'z'
+              degreeY = -90
+              break
+        }
+        break
+  }
+    
+  // determine target_row_or_column
+  let target_row_or_column
+  let target_elems = []
+  for(let i=0; i<3; i++) {
+    if(all_elems[rotate_direction][i].indexOf(arrow_elem.parentNode.parentNode) >= 0) {
+      target_row_or_column = i+1
+      target_elems = all_elems[rotate_direction][i]
+      break
+    }
+  }
+    
+  let need_reset = false
+  // rotate
+  target_elems.forEach(function(el) {
+    el.style.transformOrigin = getTransformOrigin(el, rotate_direction)
+    let current_degrees = getRotateDegreesFromMatrix3dArray(getMatrix3dArray(el))
+    let current_translations = getTraslationsFromMatrix3dArray(getMatrix3dArray(el))
+    let new_transform = 'translate3d(' +
+                                      current_translations[0] + 'px, ' +
+                                      current_translations[1] + 'px, ' +
+                                      current_translations[2] + 'px) ' +
+                        'rotateX(' + (current_degrees[0] + degreeX) + 'deg) ' +
+                        'rotateY(' + (current_degrees[1] + degreeY) + 'deg) ' +
+                        'rotateZ(' + (current_degrees[2] + degreeZ) + 'deg)'
+    el.style.transition = 'transform 1s linear'
+    el.style.transform = new_transform
+    // if >= 90 degree, need to reset
+    if(current_degrees[0] + degreeX >= 90 || current_degrees[1] + degreeY >= 90 || current_degrees[2] + degreeZ >= 90) {
+      need_reset = true
+    }
+  })
+  // reset
+  if(need_reset) {
+    target_elems[0].addEventListener('transitionend', function handler() {
+      resetCube(target_elems, rotate_direction, target_row_or_column)
+      this.removeEventListener('transitionend', handler)
+    })
+  } 
+}
+
+
 
 function getAllAncestors(elem) {
   var p = elem;
@@ -745,11 +1019,15 @@ function getAllAncestors(elem) {
   return p_s;
 }
 
+
+
 function getMatrix3dArrayFromStyle(sytle_string) {
   var str = sytle_string.replace('matrix3d(', '')
   var str = str.replace(')', '')
   return str.split(', ')
 }
+
+
 
 function matrix3dProduct(arr_matrix_1, arr_matrix_2){
   var output_arr_matrix = [];
