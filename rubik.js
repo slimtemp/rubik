@@ -591,7 +591,7 @@ function rotate(rotate_direction, target_row_or_column, degree) {
 
 
 
-function resetCube(target_elems, rotate_direction, target_row_or_column) {
+function resetCube(target_elems, rotate_direction, target_row_or_column, is_clockwise) {
   target_elems.forEach( function(el) {
     el.style.transition = 'transform 0s linear'
     let current_translations = getTraslationsFromMatrix3dArray(getMatrix3dArray(el))
@@ -605,7 +605,7 @@ function resetCube(target_elems, rotate_direction, target_row_or_column) {
   })
   
   // update color
-  updateColor(rotate_direction, target_row_or_column)
+  updateColor(rotate_direction, target_row_or_column, is_clockwise)
 }
 
 
@@ -703,18 +703,33 @@ function getCurrentDegrees() {
 
 
 
-function updateColor(rotating_direction, row_column_index) {
+function updateColor(rotating_direction, row_column_index, is_clockwise) {
   let color_change_array = color_change_matrix_90_deg[rotating_direction + row_column_index]
-  // get current(from) color
-  let from_colors = []
-  for(let i=0; i < color_change_array.length / 2; i++) {
-    let update_from_elem = document.querySelector(color_change_array[2 * i + 1])
-    from_colors.push(window.getComputedStyle(update_from_elem).getPropertyValue('background-color'))
-  }
-  // update color
-  for(let i=0; i < color_change_array.length / 2; i++) {
-    let update_to_elem = document.querySelector(color_change_array[2 * i])
-    update_to_elem.style.backgroundColor = from_colors[i]
+  
+  if(is_clockwise === true) { 
+      // get current(from) color
+      let from_colors = []
+      for(let i=0; i < color_change_array.length / 2; i++) {
+        let update_from_elem = document.querySelector(color_change_array[2 * i + 1])
+        from_colors.push(window.getComputedStyle(update_from_elem).getPropertyValue('background-color'))
+      }
+      // update color
+      for(let i=0; i < color_change_array.length / 2; i++) {
+        let update_to_elem = document.querySelector(color_change_array[2 * i])
+        update_to_elem.style.backgroundColor = from_colors[i]
+      }
+  } else {
+      // get current(from) color
+      let from_colors = []
+      for(let i=0; i < color_change_array.length / 2; i++) {
+        let update_from_elem = document.querySelector(color_change_array[2 * i])
+        from_colors.push(window.getComputedStyle(update_from_elem).getPropertyValue('background-color'))
+      }
+      // update color
+      for(let i=0; i < color_change_array.length / 2; i++) {
+        let update_to_elem = document.querySelector(color_change_array[2 * i + 1])
+        update_to_elem.style.backgroundColor = from_colors[i]
+      }
   }
 }
 
@@ -1056,7 +1071,13 @@ function rotateByArrow(arrow_elem) {
   })
   // reset
     target_elems[0].addEventListener('transitionend', function handler() {
-      resetCube(target_elems, rotate_direction, target_row_or_column)
+      let is_clockwise
+      if(degreeX >= 0 && degreeY >= 0 && degreeZ >= 0) {
+          is_clockwise = true
+      } else {
+          is_clockwise = false
+      }
+      resetCube(target_elems, rotate_direction, target_row_or_column, is_clockwise)
       this.removeEventListener('transitionend', handler)
     }) 
     
