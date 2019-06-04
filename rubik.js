@@ -1151,7 +1151,7 @@ function rotateByArrow(arrow_elem) {
                         'rotateX(' + (current_degrees[0] + degreeX) + 'deg) ' +
                         'rotateY(' + (current_degrees[1] + degreeY) + 'deg) ' +
                         'rotateZ(' + (current_degrees[2] + degreeZ) + 'deg)'
-    el.style.transition = 'transform 0.2s linear'
+    el.style.transition = 'transform 0.5s linear'
     el.style.transform = new_transform
   })
   // reset
