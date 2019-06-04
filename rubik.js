@@ -785,6 +785,11 @@ document.addEventListener("mousedown", (e) => {
 
 
 function rotateByArrow(arrow_elem) {
+  //hide arrows first
+  document.querySelectorAll('.arrow').forEach( function (e) {
+    e.style.display = 'none'
+  });
+    
   let all_elems = {}
   all_elems.x = []
   all_elems.y = []
@@ -913,13 +918,14 @@ function rotateByArrow(arrow_elem) {
               break
             case 'up arrow' :
               rotate_direction = 'x'
-              degreeY = 90
+              degreeX = 90
               break
             case 'down arrow' :
               rotate_direction = 'x'
-              degreeY = -90
+              degreeX = -90
               break
         }
+        break
       case 'side6' :
         switch(arrow_elem.className){
             case 'left arrow' :
@@ -932,36 +938,74 @@ function rotateByArrow(arrow_elem) {
               break
             case 'up arrow' :
               rotate_direction = 'x'
-              degreeY = 90
+              degreeX = -90
               break
             case 'down arrow' :
               rotate_direction = 'x'
-              degreeY = -90
+              degreeX = 90
               break
         }
         break
       case 'side2' :
+        switch(arrow_elem.className){
+            case 'left arrow' :
+              rotate_direction = 'z'
+              degreeZ = -90
+              break
+            case 'right arrow' :
+              rotate_direction = 'z'
+              degreeZ = 90
+              break
+            case 'up arrow' :
+              rotate_direction = 'x'
+              degreeX = -90
+              break
+            case 'down arrow' :
+              rotate_direction = 'x'
+              degreeX = 90
+              break
+        }
+        break
       case 'side3' :
         switch(arrow_elem.className){
             case 'left arrow' :
               rotate_direction = 'z'
-              degreeY = 90
+              degreeZ = 90
               break
             case 'right arrow' :
               rotate_direction = 'z'
-              degreeY = -90
+              degreeZ = -90
               break
             case 'up arrow' :
               rotate_direction = 'x'
-              degreeY = 90
+              degreeX = -90
               break
             case 'down arrow' :
               rotate_direction = 'x'
-              degreeY = -90
+              degreeX = 90
               break
         }
         break
       case 'side4' :
+        switch(arrow_elem.className){
+            case 'left arrow' :
+              rotate_direction = 'y'
+              degreeY = 90
+              break
+            case 'right arrow' :
+              rotate_direction = 'y'
+              degreeY = -90
+              break
+            case 'up arrow' :
+              rotate_direction = 'z'
+              degreeZ = 90
+              break
+            case 'down arrow' :
+              rotate_direction = 'z'
+              degreeZ = -90
+              break
+        }
+        break
       case 'side5' :
         switch(arrow_elem.className){
             case 'left arrow' :
@@ -974,11 +1018,11 @@ function rotateByArrow(arrow_elem) {
               break
             case 'up arrow' :
               rotate_direction = 'z'
-              degreeY = 90
+              degreeZ = -90
               break
             case 'down arrow' :
               rotate_direction = 'z'
-              degreeY = -90
+              degreeZ = 90
               break
         }
         break
@@ -995,7 +1039,6 @@ function rotateByArrow(arrow_elem) {
     }
   }
     
-  let need_reset = false
   // rotate
   target_elems.forEach(function(el) {
     el.style.transformOrigin = getTransformOrigin(el, rotate_direction)
@@ -1010,18 +1053,17 @@ function rotateByArrow(arrow_elem) {
                         'rotateZ(' + (current_degrees[2] + degreeZ) + 'deg)'
     el.style.transition = 'transform 1s linear'
     el.style.transform = new_transform
-    // if >= 90 degree, need to reset
-    if(current_degrees[0] + degreeX >= 90 || current_degrees[1] + degreeY >= 90 || current_degrees[2] + degreeZ >= 90) {
-      need_reset = true
-    }
   })
   // reset
-  if(need_reset) {
     target_elems[0].addEventListener('transitionend', function handler() {
       resetCube(target_elems, rotate_direction, target_row_or_column)
       this.removeEventListener('transitionend', handler)
-    })
-  } 
+    }) 
+    
+  //remove arrows
+  document.querySelectorAll('.arrow').forEach( function (e) {
+    e.remove()
+  });
 }
 
 
