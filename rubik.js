@@ -1361,5 +1361,5 @@ document.getElementsByClassName('randomize_button')[0].addEventListener('click',
     if(++i >= arr_steps.length) {
       clearInterval(flag)
     }
-  }, 500);
+  }, 1000);
 })
