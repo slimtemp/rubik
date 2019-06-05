@@ -1070,3 +1070,91 @@ function rotate3d_to_matrix3d(x1, y1, z1, deg) {
                      + m31 + ', ' + m32 + ', ' + m33 + ', ' + m34 + ', ' 
                      + m41 + ', ' + m42 + ', ' + m43 + ', ' + m44 + ')'
 }
+
+
+// slide bar
+document.getElementById('rotatex_slider').addEventListener('input', function (e) {
+  let old_degree_value = parseInt(document.getElementById('rotatex_value').innerHTML)
+  let new_degree_value = parseInt(e.target.value)
+  
+  document.getElementById('rotatex_value').innerHTML = new_degree_value
+  let added_arr_matrix3d = getArrayFromMatrixString(rotate3d_to_matrix3d(1, 0, 0, new_degree_value - old_degree_value))
+  
+  //get current matrix3d
+  let cube = document.getElementsByClassName('cube')[0]
+  let current_arr_matrix3d = getArrayFromMatrixString(window.getComputedStyle(cube).transform)
+  
+  // matrix production to get new transform matrix, added matrix in the back
+  let new_matrix3d = matrix3dProduct(current_arr_matrix3d, added_arr_matrix3d)
+  
+  //update transform
+  cube.style.transform = getStyleFromMatrix3dArray(new_matrix3d)
+})
+
+
+document.getElementById('rotatey_slider').addEventListener('input', function (e) {
+  let old_degree_value = parseInt(document.getElementById('rotatey_value').innerHTML)
+  let new_degree_value = parseInt(e.target.value)
+  
+  document.getElementById('rotatey_value').innerHTML = new_degree_value
+  let added_arr_matrix3d = getArrayFromMatrixString(rotate3d_to_matrix3d(0, 1, 0, new_degree_value - old_degree_value))
+  
+  //get current matrix3d
+  let cube = document.getElementsByClassName('cube')[0]
+  let current_arr_matrix3d = getArrayFromMatrixString(window.getComputedStyle(cube).transform)
+  
+  // matrix production to get new transform matrix, added matrix in the back
+  let new_matrix3d = matrix3dProduct(current_arr_matrix3d, added_arr_matrix3d)
+  
+  //update transform
+  cube.style.transform = getStyleFromMatrix3dArray(new_matrix3d)
+})
+
+
+// spinner for rotateZ
+document.getElementsByClassName('spinner')[0].addEventListener('mouseover', function (e) {
+  if(document.getElementsByClassName('spinner')[0].style.boxShadow !== 'rgb(255, 83, 26) 0px -20px 0px 24px inset') {
+    document.getElementsByClassName('spinner')[0].style.boxShadow = 'gray 0 -20px 0 24px inset'
+  }
+})
+
+document.getElementsByClassName('spinner')[0].addEventListener('mouseout', function (e) {
+  if(document.getElementsByClassName('spinner')[0].style.boxShadow !== 'rgb(255, 83, 26) 0px -20px 0px 24px inset') {
+      document.getElementsByClassName('spinner')[0].style.boxShadow = 'lightgray 0 -20px 0 24px inset'
+  }
+})
+
+document.addEventListener('mousedown', function (e) {
+  if(e.target === document.getElementsByClassName('spinner')[0]) {
+    document.getElementsByClassName('spinner')[0].style.boxShadow = 'rgb(255, 83, 26) 0px -20px 0px 24px inset'
+  }
+})
+
+document.addEventListener('mouseup', function (e) {
+  if(e.target === document.getElementsByClassName('spinner')[0]) {
+    document.getElementsByClassName('spinner')[0].style.boxShadow = 'gray 0 -20px 0 24px inset'
+  } else {
+    document.getElementsByClassName('spinner')[0].style.boxShadow = 'lightgray 0 -20px 0 24px inset'
+  }
+})
+
+document.addEventListener('mousemove', function (e) {
+  let spinner_center_x = (document.getElementsByClassName('spinner')[0].getBoundingClientRect().left +
+                        document.getElementsByClassName('spinner')[0].getBoundingClientRect().right) / 2
+  let spinner_center_y = (document.getElementsByClassName('spinner')[0].getBoundingClientRect().top +
+                        document.getElementsByClassName('spinner')[0].getBoundingClientRect().bottom) / 2
+  if(document.getElementsByClassName('spinner')[0].style.boxShadow === 'rgb(255, 83, 26) 0px -20px 0px 24px inset') {
+    let radian = Math.atan((e.clientX - spinner_center_x) / (spinner_center_y - e.clientY))
+    // if |degree| > 90 deg
+    if(e.clientY > spinner_center_y) {
+      if(e.clientX > spinner_center_x){
+          radian += Math.PI
+      } else if(e.clientX < spinner_center_x){
+          radian -= Math.PI
+      }
+    }
+    let degree = radian * 180 / Math.PI
+    document.getElementsByClassName('spinner')[0].style.transform = 'rotate(' + degree + 'deg)'
+    console.log(document.getElementsByClassName('spinner')[0].style.transform)
+  }
+})
