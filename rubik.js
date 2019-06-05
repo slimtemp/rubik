@@ -1177,94 +1177,103 @@ document.addEventListener('mousemove', function (e) {
 
 function random123(step) {
   let r
+  let arr_result = []
   let direction = []
   let index = []
   
-  //get first direction
-  r = Math.random()
-  if(r>=0 && r<0.33) {
-    direction[0] = 'x'
-  } else if(r>=0.33 && r<0.66) {
-    direction[0] = 'y'
-  } else {
-    direction[0] = 'z'
-  }
-    
-  //get second and third direction
-  r = Math.random()
-  if(r>=0 && r<0.5) {
-    switch(direction[0]) {
-        case 'x' :
-            direction[1] = 'y'
-            direction[2] = 'z'
-            break;
-        case 'y' :
-            direction[1] = 'z'
-            direction[2] = 'x'
-            break;
-        case 'z' :
-            direction[1] = 'x'
-            direction[2] = 'y'
-            break;
+  for(let i=0; i<step; i++) {
+    //get first direction
+    r = Math.random()
+    if(r>=0 && r<0.33) {
+      direction[0] = 'x'
+    } else if(r>=0.33 && r<0.66) {
+      direction[0] = 'y'
+    } else {
+      direction[0] = 'z'
     }
-  } else {
+      
+    //get second and third direction
+    r = Math.random()
+    if(r>=0 && r<0.5) {
       switch(direction[0]) {
-        case 'x' :
-            direction[1] = 'z'
-            direction[2] = 'y'
-            break;
-        case 'y' :
-            direction[1] = 'x'
-            direction[2] = 'z'
-            break;
-        case 'z' :
-            direction[1] = 'y'
-            direction[2] = 'x'
-            break;
+          case 'x' :
+              direction[1] = 'y'
+              direction[2] = 'z'
+              break;
+          case 'y' :
+              direction[1] = 'z'
+              direction[2] = 'x'
+              break;
+          case 'z' :
+              direction[1] = 'x'
+              direction[2] = 'y'
+              break;
+      }
+    } else {
+        switch(direction[0]) {
+          case 'x' :
+              direction[1] = 'z'
+              direction[2] = 'y'
+              break;
+          case 'y' :
+              direction[1] = 'x'
+              direction[2] = 'z'
+              break;
+          case 'z' :
+              direction[1] = 'y'
+              direction[2] = 'x'
+              break;
+      }
     }
-  }
-    
-  //get first index
-  r = Math.random()
-  if(r>=0 && r<0.33) {
-    direction[0] = '1'
-  } else if(r>=0.33 && r<0.66) {
-    direction[0] = '2'
-  } else {
-    direction[0] = '3'
-  }
-    
-  //get second and third index
-  r = Math.random()
-  if(r>=0 && r<0.5) {
-    switch(direction[0]) {
-        case '1' :
-            direction[1] = '2'
-            direction[2] = '3'
-            break;
-        case '2' :
-            direction[1] = '3'
-            direction[2] = '1'
-            break;
-        case '3' :
-            direction[1] = '1'
-            direction[2] = '2'
-            break;
+      
+    //get first index
+    r = Math.random()
+    if(r>=0 && r<0.33) {
+      index[0] = '1'
+    } else if(r>=0.33 && r<0.66) {
+      index[0] = '2'
+    } else {
+      index[0] = '3'
     }
-  } else {
-      switch(direction[0]) {
-        case '1' :
-            direction[1] = '3'
-            direction[2] = '2'
-            break;
-        case '2' :
-            direction[1] = '1'
-            direction[2] = '3'
-            break;
-        case '3' :
-            direction[1] = '2'
-            direction[2] = '1'
-            break;
+      
+    //get second and third index
+    r = Math.random()
+    if(r>=0 && r<0.5) {
+      switch(index[0]) {
+          case '1' :
+            index[1] = '2'
+            index[2] = '3'
+              break;
+          case '2' :
+            index[1] = '3'
+            index[2] = '1'
+              break;
+          case '3' :
+            index[1] = '1'
+            index[2] = '2'
+              break;
+      }
+    } else {
+        switch(index[0]) {
+          case '1' :
+            index[1] = '3'
+            index[2] = '2'
+              break;
+          case '2' :
+            index[1] = '1'
+            index[2] = '3'
+              break;
+          case '3' :
+            index[1] = '2'
+            index[2] = '1'
+              break;
+      }
     }
+    arr_result[i] = {}
+    arr_result[i].index = index
+    index = []
+    arr_result[i].direction = direction
+    direction = []
   }
+  return arr_result
 }
