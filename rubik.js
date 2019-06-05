@@ -1113,37 +1113,40 @@ document.getElementById('rotatey_slider').addEventListener('input', function (e)
 
 // spinner for rotateZ
 document.getElementsByClassName('spinner')[0].addEventListener('mouseover', function (e) {
-  if(document.getElementsByClassName('spinner')[0].style.boxShadow !== 'rgb(255, 83, 26) 0px -20px 0px 24px inset') {
-    document.getElementsByClassName('spinner')[0].style.boxShadow = 'gray 0 -20px 0 24px inset'
+  if(document.getElementsByClassName('spinner')[0].style.boxShadow !== 'rgb(255, 83, 26) 0px -40px 0px 48px inset') {
+    document.getElementsByClassName('spinner')[0].style.boxShadow = 'gray 0px -40px 0px 48px inset'
   }
 })
 
 document.getElementsByClassName('spinner')[0].addEventListener('mouseout', function (e) {
-  if(document.getElementsByClassName('spinner')[0].style.boxShadow !== 'rgb(255, 83, 26) 0px -20px 0px 24px inset') {
-      document.getElementsByClassName('spinner')[0].style.boxShadow = 'lightgray 0 -20px 0 24px inset'
+  if(document.getElementsByClassName('spinner')[0].style.boxShadow !== 'rgb(255, 83, 26) 0px -40px 0px 48px inset') {
+      document.getElementsByClassName('spinner')[0].style.boxShadow = 'lightgray 0px -40px 0px 48px inset'
   }
 })
 
 document.addEventListener('mousedown', function (e) {
   if(e.target === document.getElementsByClassName('spinner')[0]) {
-    document.getElementsByClassName('spinner')[0].style.boxShadow = 'rgb(255, 83, 26) 0px -20px 0px 24px inset'
+    document.getElementsByClassName('spinner')[0].style.boxShadow = 'rgb(255, 83, 26) 0px -40px 0px 48px inset'
   }
 })
 
 document.addEventListener('mouseup', function (e) {
   if(e.target === document.getElementsByClassName('spinner')[0]) {
-    document.getElementsByClassName('spinner')[0].style.boxShadow = 'gray 0 -20px 0 24px inset'
+    document.getElementsByClassName('spinner')[0].style.boxShadow = 'gray 0px -40px 0px 48px inset'
   } else {
-    document.getElementsByClassName('spinner')[0].style.boxShadow = 'lightgray 0 -20px 0 24px inset'
+    document.getElementsByClassName('spinner')[0].style.boxShadow = 'lightgray 0px -40px 0px 48px inset'
   }
 })
 
 document.addEventListener('mousemove', function (e) {
+  let old_degree_value = parseInt(document.getElementsByClassName('spinner')[0].style.transform.replace('rotate(', ''))
+  let new_degree_value
+  
   let spinner_center_x = (document.getElementsByClassName('spinner')[0].getBoundingClientRect().left +
                         document.getElementsByClassName('spinner')[0].getBoundingClientRect().right) / 2
   let spinner_center_y = (document.getElementsByClassName('spinner')[0].getBoundingClientRect().top +
                         document.getElementsByClassName('spinner')[0].getBoundingClientRect().bottom) / 2
-  if(document.getElementsByClassName('spinner')[0].style.boxShadow === 'rgb(255, 83, 26) 0px -20px 0px 24px inset') {
+  if(document.getElementsByClassName('spinner')[0].style.boxShadow === 'rgb(255, 83, 26) 0px -40px 0px 48px inset') {
     let radian = Math.atan((e.clientX - spinner_center_x) / (spinner_center_y - e.clientY))
     // if |degree| > 90 deg
     if(e.clientY > spinner_center_y) {
@@ -1154,7 +1157,17 @@ document.addEventListener('mousemove', function (e) {
       }
     }
     let degree = radian * 180 / Math.PI
-    document.getElementsByClassName('spinner')[0].style.transform = 'rotate(' + degree + 'deg)'
-    console.log(document.getElementsByClassName('spinner')[0].style.transform)
+    document.getElementsByClassName('spinner')[0].style.transform = 'rotate(' + parseInt(degree) + 'deg)'
+    new_degree_value = parseInt(degree)
+      
+    let added_arr_matrix3d = getArrayFromMatrixString(rotate3d_to_matrix3d(0, 0, 1, new_degree_value - old_degree_value))
+  
+    //get current matrix3d
+    let cube = document.getElementsByClassName('cube')[0]
+    let current_arr_matrix3d = getArrayFromMatrixString(window.getComputedStyle(cube).transform)
+    // matrix production to get new transform matrix, added matrix in the back
+    let new_matrix3d = matrix3dProduct(current_arr_matrix3d, added_arr_matrix3d)
+    //update transform
+    cube.style.transform = getStyleFromMatrix3dArray(new_matrix3d)
   }
 })

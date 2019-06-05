@@ -12,24 +12,24 @@ div {
   display: block;
   position: relative;
   box-sizing: border-box;
-  height: 60px;
-  width: 60px;
+  height: 120px;
+  width: 120px;
   margin: 30px;
   border: 0px solid lightgrey;
   border-radius: 50%;
-  box-shadow: 0 -20px 0 24px lightgray inset;
+  box-shadow: lightgray 0px -40px 0px 48px inset;
   position: absolute;
   /* left = right of horizontal slider */
-  left: calc(50% + 300px);
-  top: calc(50% + 200px);
+  left: calc(50% + 250px);
+  top: calc(50% + 150px);
   transition: box-shadow 0.5s;
 }
 
 .slider_container {
   position: absolute;
-  width: 400px;
+  width: 600px;
   top: calc(50% + 300px);
-  left: calc(50%);
+  left: calc(50% - 200px);
 }
 
 .slider_container > label {
