@@ -842,7 +842,7 @@ function rotateByParam(rotate_direction, target_row_or_column) {
                         'rotateX(' + (current_degrees[0] + degreeX) + 'deg) ' +
                         'rotateY(' + (current_degrees[1] + degreeY) + 'deg) ' +
                         'rotateZ(' + (current_degrees[2] + degreeZ) + 'deg)'
-    el.style.transition = 'transform 0.3s linear'
+    el.style.transition = 'transform 1s linear'
     el.style.transform = new_transform
   })
   // reset 
@@ -1361,5 +1361,5 @@ document.getElementsByClassName('randomize_button')[0].addEventListener('click',
     if(++i >= arr_steps.length) {
       clearInterval(flag)
     }
-  }, 1000);
+  }, 1200);
 })
