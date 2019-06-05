@@ -707,7 +707,150 @@ function showArrows(e) {
   }
 }
 
-
+// only rotate 90 degree
+function rotateByParam(rotate_direction, target_row_or_column) {
+  let degreeX = 0, degreeY = 0, degreeZ = 0
+  let target_elems = []
+  if(rotate_direction === 'x') {
+    degreeX = 90
+    if(target_row_or_column === 1) {
+      target_elems = [
+                       document.querySelector('.front.i1') ,
+                       document.querySelector('.front.i4') ,
+                       document.querySelector('.front.i7') ,
+                       document.querySelector('.middle.i1') ,
+                       document.querySelector('.middle.i4') ,
+                       document.querySelector('.middle.i7') ,
+                       document.querySelector('.back.i1') ,
+                       document.querySelector('.back.i4') ,
+                       document.querySelector('.back.i7')
+                     ]
+    } else if(target_row_or_column === 2) {
+      target_elems = [
+                       document.querySelector('.front.i2') ,
+                       document.querySelector('.front.i5') ,
+                       document.querySelector('.front.i8') ,
+                       document.querySelector('.middle.i2') ,
+                       document.querySelector('.middle.i5') ,
+                       document.querySelector('.middle.i8') ,
+                       document.querySelector('.back.i2') ,
+                       document.querySelector('.back.i5') ,
+                       document.querySelector('.back.i8')
+                     ]
+    } else if(target_row_or_column === 3) {
+      target_elems = [
+                       document.querySelector('.front.i3') ,
+                       document.querySelector('.front.i6') ,
+                       document.querySelector('.front.i9') ,
+                       document.querySelector('.middle.i3') ,
+                       document.querySelector('.middle.i6') ,
+                       document.querySelector('.middle.i9') ,
+                       document.querySelector('.back.i3') ,
+                       document.querySelector('.back.i6') ,
+                       document.querySelector('.back.i9')
+                     ]
+    }
+  } else if(rotate_direction === 'y') {
+    degreeY = 90
+    if(target_row_or_column === 1) {
+      target_elems = [
+                       document.querySelector('.front.i1') ,
+                       document.querySelector('.front.i2') ,
+                       document.querySelector('.front.i3') ,
+                       document.querySelector('.middle.i1') ,
+                       document.querySelector('.middle.i2') ,
+                       document.querySelector('.middle.i3') ,
+                       document.querySelector('.back.i1') ,
+                       document.querySelector('.back.i2') ,
+                       document.querySelector('.back.i3')
+                     ]
+    } else if(target_row_or_column === 2) {
+      target_elems = [
+                       document.querySelector('.front.i4') ,
+                       document.querySelector('.front.i5') ,
+                       document.querySelector('.front.i6') ,
+                       document.querySelector('.middle.i4') ,
+                       document.querySelector('.middle.i5') ,
+                       document.querySelector('.middle.i6') ,
+                       document.querySelector('.back.i4') ,
+                       document.querySelector('.back.i5') ,
+                       document.querySelector('.back.i6')
+                     ]
+    } else if(target_row_or_column === 3) {
+      target_elems = [
+                       document.querySelector('.front.i7') ,
+                       document.querySelector('.front.i8') ,
+                       document.querySelector('.front.i9') ,
+                       document.querySelector('.middle.i7') ,
+                       document.querySelector('.middle.i8') ,
+                       document.querySelector('.middle.i9') ,
+                       document.querySelector('.back.i7') ,
+                       document.querySelector('.back.i8') ,
+                       document.querySelector('.back.i9')
+                     ]
+    }
+  } else if(rotate_direction === 'z') {
+    degreeZ = 90
+    if(target_row_or_column === 1) {
+      target_elems = [
+                       document.querySelector('.front.i1') ,
+                       document.querySelector('.front.i2') ,
+                       document.querySelector('.front.i3') ,
+                       document.querySelector('.front.i4') ,
+                       document.querySelector('.front.i5') ,
+                       document.querySelector('.front.i6') ,
+                       document.querySelector('.front.i7') ,
+                       document.querySelector('.front.i8') ,
+                       document.querySelector('.front.i9')
+                     ]
+    } else if(target_row_or_column === 2) {
+      target_elems = [
+                       document.querySelector('.middle.i1') ,
+                       document.querySelector('.middle.i2') ,
+                       document.querySelector('.middle.i3') ,
+                       document.querySelector('.middle.i4') ,
+                       document.querySelector('.middle.i5') ,
+                       document.querySelector('.middle.i6') ,
+                       document.querySelector('.middle.i7') ,
+                       document.querySelector('.middle.i8') ,
+                       document.querySelector('.middle.i9')
+                     ]
+    } else if(target_row_or_column === 3) {
+      target_elems = [
+                       document.querySelector('.back.i1') ,
+                       document.querySelector('.back.i2') ,
+                       document.querySelector('.back.i3') ,
+                       document.querySelector('.back.i4') ,
+                       document.querySelector('.back.i5') ,
+                       document.querySelector('.back.i6') ,
+                       document.querySelector('.back.i7') ,
+                       document.querySelector('.back.i8') ,
+                       document.querySelector('.back.i9')
+                     ]
+    }
+  }
+  
+  // rotate
+  target_elems.forEach( function(el) {
+    el.style.transformOrigin = getTransformOrigin(el, rotate_direction)
+    let current_degrees = getRotateDegreesFromMatrix3dArray(getMatrix3dArray(el))
+    let current_translations = getTraslationsFromMatrix3dArray(getMatrix3dArray(el))
+    let new_transform = 'translate3d(' +
+                                      current_translations[0] + 'px, ' +
+                                      current_translations[1] + 'px, ' +
+                                      current_translations[2] + 'px) ' +
+                        'rotateX(' + (current_degrees[0] + degreeX) + 'deg) ' +
+                        'rotateY(' + (current_degrees[1] + degreeY) + 'deg) ' +
+                        'rotateZ(' + (current_degrees[2] + degreeZ) + 'deg)'
+    el.style.transition = 'transform 0.3s linear'
+    el.style.transform = new_transform
+  })
+  // reset 
+  target_elems[0].addEventListener('transitionend', function handler() {
+    resetCube(target_elems, rotate_direction, target_row_or_column, true)
+    this.removeEventListener('transitionend', handler) 
+  })
+}
 
 function rotateByArrow(arrow_elem) {
   //hide arrows first
@@ -1178,102 +1321,45 @@ document.addEventListener('mousemove', function (e) {
 function random123(step) {
   let r
   let arr_result = []
-  let direction = []
-  let index = []
+  let direction
+  let index
   
   for(let i=0; i<step; i++) {
-    //get first direction
+    //get direction
     r = Math.random()
     if(r>=0 && r<0.33) {
-      direction[0] = 'x'
+      direction = 'x'
     } else if(r>=0.33 && r<0.66) {
-      direction[0] = 'y'
+      direction = 'y'
     } else {
-      direction[0] = 'z'
-    }
+      direction = 'z'
+    } 
       
-    //get second and third direction
-    r = Math.random()
-    if(r>=0 && r<0.5) {
-      switch(direction[0]) {
-          case 'x' :
-              direction[1] = 'y'
-              direction[2] = 'z'
-              break;
-          case 'y' :
-              direction[1] = 'z'
-              direction[2] = 'x'
-              break;
-          case 'z' :
-              direction[1] = 'x'
-              direction[2] = 'y'
-              break;
-      }
-    } else {
-        switch(direction[0]) {
-          case 'x' :
-              direction[1] = 'z'
-              direction[2] = 'y'
-              break;
-          case 'y' :
-              direction[1] = 'x'
-              direction[2] = 'z'
-              break;
-          case 'z' :
-              direction[1] = 'y'
-              direction[2] = 'x'
-              break;
-      }
-    }
-      
-    //get first index
+    //get index
     r = Math.random()
     if(r>=0 && r<0.33) {
-      index[0] = '1'
+      index = 1
     } else if(r>=0.33 && r<0.66) {
-      index[0] = '2'
+      index = 2
     } else {
-      index[0] = '3'
-    }
-      
-    //get second and third index
-    r = Math.random()
-    if(r>=0 && r<0.5) {
-      switch(index[0]) {
-          case '1' :
-            index[1] = '2'
-            index[2] = '3'
-              break;
-          case '2' :
-            index[1] = '3'
-            index[2] = '1'
-              break;
-          case '3' :
-            index[1] = '1'
-            index[2] = '2'
-              break;
-      }
-    } else {
-        switch(index[0]) {
-          case '1' :
-            index[1] = '3'
-            index[2] = '2'
-              break;
-          case '2' :
-            index[1] = '1'
-            index[2] = '3'
-              break;
-          case '3' :
-            index[1] = '2'
-            index[2] = '1'
-              break;
-      }
-    }
+      index = 3
+    } 
     arr_result[i] = {}
     arr_result[i].index = index
-    index = []
+    index = ''
     arr_result[i].direction = direction
-    direction = []
+    direction = ''
   }
   return arr_result
 }
+
+document.getElementsByClassName('randomize_button')[0].addEventListener('click', function (){
+  let arr_steps = random123(document.querySelector('.randomize > input').value)
+  let i=0;
+  let flag = setInterval(() => {
+    rotateByParam(arr_steps[i].direction, arr_steps[i].index)
+    if(++i >= arr_steps.length) {
+      clearInterval(flag)
+    }
+  }, 500);
+})

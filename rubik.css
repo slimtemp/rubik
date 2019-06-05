@@ -8,6 +8,24 @@ div {
   user-select: none;
 }
 
+.randomize {
+  position: relative;
+  width: 40%;
+  left: calc(50% - 150px);
+  top: calc(50% + 220px);
+  font-size: 2em;
+  font-weight: 800;
+}
+
+.randomize > button {
+  font-size: 1em;
+}
+
+.randomize > input {
+  font-size: 1em;
+  width: 50px;
+}
+
 .spinner {
   display: block;
   position: relative;
