@@ -716,6 +716,7 @@ function showArrows(e) {
     
     // I don't know why the code below works....yet
     // purpose: pop up 4 arrows
+    // --------this mathod is discarded.============
     /*
     if(e.target.parentElement.classList.contains('front') && e.target.className === 'side1') {
       e.target.parentNode.style.zIndex = '1'
@@ -728,20 +729,20 @@ function showArrows(e) {
 
 
 function overlay2Elem(e_moved, e_target) {
-  let current_left = 0
+  let current_left = e_target.getBoundingClientRect().left - e_moved.getBoundingClientRect().left
   for(let i=1; i<document.body.clientWidth; i++) {
     e_moved.style.left = current_left + 'px' ;
-    current_left++ ;
     if(Math.abs(e_moved.getBoundingClientRect().left - e_target.getBoundingClientRect().left) <= 1) 
       break
+    current_left++ ;
   }
 
-  let current_top = 0
+  let current_top = e_target.getBoundingClientRect().top - e_moved.getBoundingClientRect().top
   for(let i=1; i<document.body.clientHeight; i++) {
     e_moved.style.top = current_top + 'px' ;
-    current_top++ ;
     if(Math.abs(e_moved.getBoundingClientRect().top - e_target.getBoundingClientRect().top) <= 1) 
       break
+    current_top++ ;
   }
 }
 
@@ -817,6 +818,16 @@ function matrix2matrix3d(arr_matrix) {
   m3d[15] = 1
   return m3d
 }
+
+
+
+
+
+
+
+
+
+
 
 // only rotate 90 degree
 function rotateByParam(rotate_direction, target_row_or_column) {
