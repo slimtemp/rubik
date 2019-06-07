@@ -494,12 +494,6 @@ function getMatrix3dArray(el) {
 
 
 
-function getArrayFromMatrixString(matrix_string) {
-  matrix_string = matrix_string.replace('matrix3d(', '')
-  matrix_string = matrix_string.replace('matrix(', '')
-  matrix_string = matrix_string.replace(')', '')
-  return matrix_string.split(',')
-}
 
 
 
@@ -687,24 +681,141 @@ function showArrows(e) {
     right_arrow.style.transform = 'translateX(100px)'
     up_arrow.style.transform = 'translateY(-50px)'
     down_arrow.style.transform = 'translateY(100px)'
+
+    //outside arrows
+    var left_arrow_out = document.createElement('div')
+    left_arrow_out.className = 'left arrow'
+    var right_arrow_out = document.createElement('div')
+    right_arrow_out.className = 'right arrow'
+    var up_arrow_out = document.createElement('div')
+    up_arrow_out.className = 'up arrow'
+    var down_arrow_out = document.createElement('div')
+    down_arrow_out.className = 'down arrow'
+
+    document.body.appendChild(left_arrow_out)
+    document.body.appendChild(right_arrow_out)
+    document.body.appendChild(up_arrow_out)
+    document.body.appendChild(down_arrow_out)
+
+    left_arrow_out.style.transform = getStyleFromMatrix3dArray(getElementActualTransform(left_arrow))
+    overlay2Elem(left_arrow_out, left_arrow) 
+    left_arrow.style.borderColor = 'transparent'
+
+    right_arrow_out.style.transform = getStyleFromMatrix3dArray(getElementActualTransform(right_arrow))
+    overlay2Elem(right_arrow_out, right_arrow)
+    right_arrow.style.borderColor = 'transparent'
+
+    up_arrow_out.style.transform = getStyleFromMatrix3dArray(getElementActualTransform(up_arrow))
+    overlay2Elem(up_arrow_out, up_arrow)
+    up_arrow.style.borderColor = 'transparent'
+
+    down_arrow_out.style.transform = getStyleFromMatrix3dArray(getElementActualTransform(down_arrow))
+    overlay2Elem(down_arrow_out, down_arrow)
+    down_arrow.style.borderColor = 'transparent'
+
     
     // I don't know why the code below works....yet
     // purpose: pop up 4 arrows
+    /*
     if(e.target.parentElement.classList.contains('front') && e.target.className === 'side1') {
       e.target.parentNode.style.zIndex = '1'
     } else {
       e.target.parentNode.style.zIndex = '-1'
     }
-      
-    // add event listener to arrows
-      /*
-    document.querySelectorAll('.arrow').forEach(function (el) {
-      el.addEventListener('mousedown', function (e) {
-        rotateByArrow(e.target)
-      })
-    })
-      */
+    */
   }
+}
+
+
+function overlay2Elem(e_moved, e_target) {
+  let current_left = 0
+  for(let i=1; i<document.body.clientWidth; i++) {
+    e_moved.style.left = current_left + 'px' ;
+    current_left++ ;
+    if(Math.abs(e_moved.getBoundingClientRect().left - e_target.getBoundingClientRect().left) <= 1) 
+      break
+  }
+
+  let current_top = 0
+  for(let i=1; i<document.body.clientHeight; i++) {
+    e_moved.style.top = current_top + 'px' ;
+    current_top++ ;
+    if(Math.abs(e_moved.getBoundingClientRect().top - e_target.getBoundingClientRect().top) <= 1) 
+      break
+  }
+}
+
+
+
+function getElementActualTransform(el) {
+  let elem_chain = []
+  let current_elem = el
+  let current_arr_matrix3d 
+  if(getArrayFromMatrixString(getComputedStyle(el).transform).length === 6) {
+    current_arr_matrix3d = matrix2matrix3d(getArrayFromMatrixString(getComputedStyle(el).transform))
+  } else if(getComputedStyle(el).transform === 'none') {
+    // do nothing, current_arr_matrix3d unchanged
+  } else { 
+    current_arr_matrix3d = getArrayFromMatrixString(getComputedStyle(el).transform)
+  } 
+
+  while(current_elem != null && current_elem.tagName.toUpperCase() != 'BODY') {
+    //console.log('totoal - ', current_arr_matrix3d) 
+    //console.log('new - ', getComputedStyle(current_elem).transform)
+
+    elem_chain[elem_chain.length] = current_elem
+
+    let added_matrix
+    if(getArrayFromMatrixString(getComputedStyle(current_elem).transform).length === 6) {
+      added_matrix = matrix2matrix3d(getArrayFromMatrixString(getComputedStyle(current_elem).transform))
+    } else if(getComputedStyle(current_elem).transform === 'none') {
+      // added_matrix is identify matrix
+      added_matrix = [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1]
+    } else { 
+      added_matrix = getArrayFromMatrixString(getComputedStyle(current_elem).transform)
+    }
+    //console.log('current_arr_matrix3d = ',current_arr_matrix3d) 
+    //console.log('added_matrix = ', added_matrix) 
+    current_arr_matrix3d = matrix3dProduct(current_arr_matrix3d, added_matrix)
+
+    current_elem = current_elem.parentNode
+  }
+  return current_arr_matrix3d
+}
+
+
+
+function getArrayFromMatrixString(matrix_string) {
+  matrix_string = matrix_string.replace('matrix3d(', '')
+  matrix_string = matrix_string.replace('matrix(', '')
+  matrix_string = matrix_string.replace(')', '')
+  let arr_out = matrix_string.split(',')
+  for(let i=0; i<arr_out.length; i++) {
+    // string to number
+    arr_out[i] = arr_out[i] - 0
+  } 
+  return arr_out
+}
+
+function matrix2matrix3d(arr_matrix) {
+  let m3d = []
+  m3d[0] = arr_matrix[0] 
+  m3d[1] = arr_matrix[1] 
+  m3d[2] = 0
+  m3d[3] = 0
+  m3d[4] = arr_matrix[2]
+  m3d[5] = arr_matrix[3]
+  m3d[6] = 0
+  m3d[7] = 0
+  m3d[8] = 0
+  m3d[9] = 0
+  m3d[10] = 1
+  m3d[11] = 0
+  m3d[12] = arr_matrix[4]
+  m3d[13] = arr_matrix[5]
+  m3d[14] = 0
+  m3d[15] = 1
+  return m3d
 }
 
 // only rotate 90 degree
