@@ -386,21 +386,23 @@ function getOS() {
   return os;
 }
 
-// Determine gif size, if windows, large gifs, if Android , small gifs
+// if windows, original gifs, half width of the screen
+// if Android , enlarge the gifs , 100% width of the screen
 window.addEventListener('load', function (e) {
   let os = getOS() 
   switch(os) {
     case 'Windows':
     case 'Mac OS':
-      document.getElementsByClassName('rotate_gif')[0].src = 'rotate_cube_large.gif'
-      document.getElementsByClassName('rotate_gif_color')[0].src = 'rotate_cube_color_large.gif'
+      // already default
       break
     case 'Android':
     case 'IOS':
-      // already default
+      document.getElementsByClassName('rotate_gif')[0].style.width = '200%'
+      document.getElementsByClassName('rotate_gif_color')[0].style.width = '200%'
+      document.getElementsByClassName('wrapper')[0].style.width = '100%'
       break
   }
-})
+}) 
   
 
 
