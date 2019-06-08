@@ -361,6 +361,46 @@ var color_change_matrix_90_deg = {
        ".back.i9 > .side6",
        ".back.i3 > .side6"]
 }
+
+// from https://stackoverflow.com/questions/38241480/detect-macos-ios-windows-android-and-linux-os-with-js
+function getOS() {
+  var userAgent = window.navigator.userAgent,
+      platform = window.navigator.platform,
+      macosPlatforms = ['Macintosh', 'MacIntel', 'MacPPC', 'Mac68K'],
+      windowsPlatforms = ['Win32', 'Win64', 'Windows', 'WinCE'],
+      iosPlatforms = ['iPhone', 'iPad', 'iPod'],
+      os = null;
+
+  if (macosPlatforms.indexOf(platform) !== -1) {
+    os = 'Mac OS';
+  } else if (iosPlatforms.indexOf(platform) !== -1) {
+    os = 'iOS';
+  } else if (windowsPlatforms.indexOf(platform) !== -1) {
+    os = 'Windows';
+  } else if (/Android/.test(userAgent)) {
+    os = 'Android';
+  } else if (!os && /Linux/.test(platform)) {
+    os = 'Linux';
+  }
+
+  return os;
+}
+
+// Determine gif size, if windows, large gifs, if Android , small gifs
+window.addEventListener('load', function (e) {
+  let os = getOS() 
+  switch(os) {
+    case 'Windows':
+    case 'Mac OS':
+      document.getElementsByClassName('rotate_gif')[0].src = 'rotate_cube_large.gif'
+      document.getElementsByClassName('rotate_gif_color')[0].src = 'rotate_cube_color_large.gif'
+      break
+    case 'Android':
+    case 'IOS':
+      // already default
+      break
+  }
+})
   
 
 
@@ -1632,13 +1672,15 @@ function randomizingRotation() {
     rotateByParam(arr_steps[i].direction, arr_steps[i].index)
     if(++i >= arr_steps.length) {
       clearInterval(flag)
-      document.getElementsByClassName('rotate_gif')[0].src = 'rotate_cube.gif'
+      document.getElementsByClassName('rotate_gif')[0].style.display = 'block'
+      document.getElementsByClassName('rotate_gif_color')[0].style.display = 'none'
     }
   }, 1200);
 }
 
 document.getElementsByClassName('randomizer')[0].addEventListener('click', function (){
-  document.getElementsByClassName('rotate_gif')[0].src = 'rotate_cube_color.gif' 
+  document.getElementsByClassName('rotate_gif')[0].style.display = 'none'
+  document.getElementsByClassName('rotate_gif_color')[0].style.display = 'block'
   let count = 1
   // get the very first original tranformations
   let original_transformations = preRandomizeEffect()
