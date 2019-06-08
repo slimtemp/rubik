@@ -1444,12 +1444,20 @@ document.addEventListener('mousedown', function (e) {
   move_direction = 'none'
   //==============================
   if(e.target === document.getElementsByClassName('spinner')[0]) {
+    document.getElementsByClassName('spinner')[0].style.cursor = 'grabbing'
+    document.getElementsByClassName('spinner')[0].parentNode.style.cursor = 'grabbing'
+    document.getElementsByClassName('spinner')[0].parentNode.parentNode.style.cursor = 'grabbing'
+    document.getElementsByClassName('spinner')[0].parentNode.parentNode.parentNode.style.cursor = 'grabbing'
     document.getElementsByClassName('spinner')[0].style.boxShadow = 'rgb(255, 83, 26) 0px -65px 0px 80px inset'
   }
 })
 
 document.addEventListener('mouseup', function (e) {
   global_mouse_down = false
+  document.getElementsByClassName('spinner')[0].style.cursor = 'grab'
+  document.getElementsByClassName('spinner')[0].parentNode.style.cursor = 'auto'
+  document.getElementsByClassName('spinner')[0].parentNode.parentNode.style.cursor = 'auto'
+  document.getElementsByClassName('spinner')[0].parentNode.parentNode.parentNode.style.cursor = 'auto'
   if(e.target === document.getElementsByClassName('spinner')[0]) {
     document.getElementsByClassName('spinner')[0].style.boxShadow = 'gray 0px -65px 0px 80px inset'
   } else {

@@ -196,6 +196,7 @@ div, img {
 .randomizer {
   margin-left: 100px;
   margin-top: auto;
+  cursor: pointer;
 } 
 
 .rotate_gif {
@@ -228,4 +229,5 @@ div, img {
   border-radius: 50%;
   box-shadow: lightgray 0px -65px 0px 80px inset; 
   transition: box-shadow 0.5s; 
+  cursor: grab;
 } 
