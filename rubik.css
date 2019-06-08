@@ -1,82 +1,24 @@
 body {
-  position: relative;
-  width: 99%;
-  height: 98vh;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: -2;
+  margin: 0;
+  overflow: hidden; 
+  overscroll-behavior: none;
+}
+
+.wrapper {
+  position: absolute; 
+  width: 100%;
+  height: 100%;   
+  overflow: hidden;
+  z-index: 1;
 }
 
 div {
   user-select: none;
-}
-
-.randomize {
-  position: relative;
-  width: 40%;
-  left: calc(50% - 150px);
-  top: calc(50% + 220px);
-  font-size: 2em;
-  font-weight: 800;
-}
-
-.randomize > button {
-  font-size: 1em;
-}
-
-.randomize > input {
-  font-size: 1em;
-  width: 50px;
-}
-
-.spinner {
-  display: block;
-  position: relative;
-  box-sizing: border-box;
-  height: 120px;
-  width: 120px;
-  margin: 30px;
-  border: 0px solid lightgrey;
-  border-radius: 50%;
-  box-shadow: lightgray 0px -40px 0px 48px inset;
-  position: absolute;
-  /* left = right of horizontal slider */
-  left: calc(50% + 250px);
-  top: calc(50% + 150px);
-  transition: box-shadow 0.5s;
-}
-
-.slider_container {
-  position: absolute;
-  width: 600px;
-  top: calc(50% + 300px);
-  left: calc(50% - 200px);
-}
-
-.slider_container > label {
-  display: inline-block;
-  width: 50px;
-  text-align: center;
-  margin-left: 20px;
-  font-size: 18pt;
-  
-}
-
-.slider_container > input {
-  position: relative;
-  width: 80%;
-  height: 2em;
-}
-
-.slider_container.vertical {
-  transform-origin: left top;
-  transform: rotate(-90deg);
-  /* left = right of horizontal slider */
-  left: calc(50% + 400px);
-}
-
-.slider_container.vertical > label {
-  position: relative;
-  transform: rotate(90deg);
-}
-
+} 
 
 .cube{
   position: absolute;
@@ -205,26 +147,6 @@ div {
   background-color: purple;
 }
 
-.operation{
-  margin: 2%;
-  display: none;
-  flex-direction: column;
-  align-content: center;
-  align-items: flex-end;
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  font-size: 2rem;
-}
-
-.operation input{
-  margin: 5px;
-  font-size: 2rem;
-}
-
-.operation button{
-  font-size: 2rem;
-}
 
 .arrow {
   position: absolute;
@@ -255,3 +177,40 @@ div {
   border-bottom: 50px solid transparent ; 
   border-left: 50px solid lawngreen ; 
 }
+
+
+.operation{ 
+  position: absolute;
+  display: flex;
+  flex-direction: row; 
+  right: 0;
+  bottom: 0;
+  font-size: 2rem; 
+  width: 100%;
+} 
+
+.randomizer {
+  display: flex;
+  margin-left: 100px;
+} 
+
+.rotate_gif {
+  position: relative;
+  height: 128px;
+  width: 128px;
+  margin-top: auto;
+  margin-bottom: 50px;
+}
+
+.spinner {
+  display: flex;
+  box-sizing: border-box;
+  height: 200px;
+  width: 200px;
+  margin: 50px;
+  margin-left: auto;
+  border: 0px solid lightgrey;
+  border-radius: 50%;
+  box-shadow: lightgray 0px -65px 0px 80px inset; 
+  transition: box-shadow 0.5s; 
+} 

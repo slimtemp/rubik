@@ -1,3 +1,7 @@
+var global_mouse_down = false
+var touch_x, touch_y
+var move_direction
+
 var transform_origin_matrix = {
   front: [
            // for rotateX, for rotateY, for rotateZ
@@ -357,84 +361,7 @@ var color_change_matrix_90_deg = {
        ".back.i9 > .side6",
        ".back.i3 > .side6"]
 }
-
-// plus 1 button
-document.querySelectorAll('.buttons button')[0].addEventListener('click', () =>
-        { document.querySelector('#degree').value = 1
-          // rotating direction is 'x', 'y' or 'z' only
-          let rotate_direction = document.querySelector('#direction').value
-          // target row or column is '1', '2' or '3' only
-          let target_row_or_column = parseInt(document.querySelector('#row_col').value)
-          let degree = parseInt(document.querySelector('#degree').value)
-          rotate(rotate_direction, target_row_or_column, degree)
-        })
-// minus 1 button
-document.querySelectorAll('.buttons button')[1].addEventListener('click', () =>
-        { document.querySelector('#degree').value = -1
-          // rotating direction is 'x', 'y' or 'z' only
-          let rotate_direction = document.querySelector('#direction').value
-          // target row or column is '1', '2' or '3' only
-          let target_row_or_column = parseInt(document.querySelector('#row_col').value)
-          let degree = parseInt(document.querySelector('#degree').value)
-          rotate(rotate_direction, target_row_or_column, degree)
-        })
-// plus 10 button
-document.querySelectorAll('.buttons button')[2].addEventListener('click', () =>
-        { document.querySelector('#degree').value = 10
-          // rotating direction is 'x', 'y' or 'z' only
-          let rotate_direction = document.querySelector('#direction').value
-          // target row or column is '1', '2' or '3' only
-          let target_row_or_column = parseInt(document.querySelector('#row_col').value)
-          let degree = parseInt(document.querySelector('#degree').value)
-          rotate(rotate_direction, target_row_or_column, degree)
-        })
-// minus 10 button
-document.querySelectorAll('.buttons button')[3].addEventListener('click', () =>
-        { document.querySelector('#degree').value = -10
-          // rotating direction is 'x', 'y' or 'z' only
-          let rotate_direction = document.querySelector('#direction').value
-          // target row or column is '1', '2' or '3' only
-          let target_row_or_column = parseInt(document.querySelector('#row_col').value)
-          let degree = parseInt(document.querySelector('#degree').value)
-          rotate(rotate_direction, target_row_or_column, degree)
-        })
-// rotate 90 button
-document.querySelectorAll('.buttons button')[4].addEventListener('click', () => 
-        { document.querySelector('#degree').value = 90
-          // rotating direction is 'x', 'y' or 'z' only
-          let rotate_direction = document.querySelector('#direction').value
-          // target row or column is '1', '2' or '3' only
-          let target_row_or_column = parseInt(document.querySelector('#row_col').value)
-          let degree = parseInt(document.querySelector('#degree').value)
-          rotate(rotate_direction, target_row_or_column, degree)
-        })
-// get current degrees button
-document.querySelectorAll('.buttons button')[5].addEventListener('click', () => 
-        {
-          console.log(getCurrentDegrees())
-        })
-// change view angles
-document.querySelectorAll('.buttons button')[6].addEventListener('click', () => 
-        {
-          let cube = document.querySelector('.cube')
-          let current_degrees = getRotateDegreesFromMatrix3dArray(getMatrix3dArray(cube))
-          console.log(current_degrees)
-          let new_transform = 'rotateX(' + (current_degrees[0] + 90) + 'deg) ' +
-                              'rotateY(' + (current_degrees[1] + 90) + 'deg) ' +
-                              'rotateZ(' + (current_degrees[2] + 90) + 'deg)'
-          cube.style.transform = new_transform
-          cube.style.transition = 'transform 1s linear'
-        })
-// rotate any degree
-document.querySelectorAll('.buttons button')[7].addEventListener('click', () =>
-        {
-          // rotating direction is 'x', 'y' or 'z' only
-          let rotate_direction = document.querySelector('#direction').value
-          // target row or column is '1', '2' or '3' only
-          let target_row_or_column = parseInt(document.querySelector('#row_col').value)
-          let degree = parseInt(document.querySelector('#degree').value)
-          rotate(rotate_direction, target_row_or_column, degree)
-        })
+  
 
 
 function resetCube(target_elems, rotate_direction, target_row_or_column, is_clockwise) {
@@ -491,11 +418,7 @@ function getMatrix3dArray(el) {
   // change some array items from string to number
   return values.map(x => x - 0)
 }
-
-
-
-
-
+ 
 
 // this function is only for the patterns :
 // rotate3d(1, 0, 0, degree) - rotateX
@@ -576,12 +499,23 @@ function updateColor(rotating_direction, row_column_index, is_clockwise) {
 
 
 document.addEventListener("mousedown", (e) => {
+  global_mouse_down = true
   // click outside the cube to hide arrows
-  if(getAllAncestors(e.target).length === 1) {  //only body
+  let ancestor_chain = getAllAncestors(e.target);
+  let i;
+  for(i=0; i<ancestor_chain.length; i++) {
+    if(ancestor_chain[i].className === 'cube') {
+      break
+    }
+  }
+  if(i === ancestor_chain.length && !e.target.classList.contains('arrow') ) {
+    // no .cube in the chain, outside the cube, 
+    // and not in the 4 global arrows
+    // remove all arrows
     document.querySelectorAll('.arrow').forEach( function (e) {
       e.remove()
     });
-  }
+  } 
     
   // another way to click 4 arrows
   let f_show_arrows = true
@@ -681,7 +615,7 @@ function showArrows(e) {
     right_arrow.style.transform = 'translateX(100px)'
     up_arrow.style.transform = 'translateY(-50px)'
     down_arrow.style.transform = 'translateY(100px)'
-
+    
     //outside arrows
     var left_arrow_out = document.createElement('div')
     left_arrow_out.className = 'left arrow'
@@ -712,20 +646,9 @@ function showArrows(e) {
     down_arrow_out.style.transform = getStyleFromMatrix3dArray(getElementActualTransform(down_arrow))
     overlay2Elem(down_arrow_out, down_arrow)
     down_arrow.style.borderColor = 'transparent'
-
-    
-    // I don't know why the code below works....yet
-    // purpose: pop up 4 arrows
-    // --------this mathod is discarded.============
-    /*
-    if(e.target.parentElement.classList.contains('front') && e.target.className === 'side1') {
-      e.target.parentNode.style.zIndex = '1'
-    } else {
-      e.target.parentNode.style.zIndex = '-1'
-    }
-    */
   }
 }
+
 
 
 function overlay2Elem(e_moved, e_target) {
@@ -817,15 +740,7 @@ function matrix2matrix3d(arr_matrix) {
   m3d[14] = 0
   m3d[15] = 1
   return m3d
-}
-
-
-
-
-
-
-
-
+} 
 
 
 
@@ -1335,83 +1250,181 @@ function rotate3d_to_matrix3d(x1, y1, z1, deg) {
                      + m31 + ', ' + m32 + ', ' + m33 + ', ' + m34 + ', ' 
                      + m41 + ', ' + m42 + ', ' + m43 + ', ' + m44 + ')'
 }
+ 
 
+//touch events
 
-// slide bar
-document.getElementById('rotatex_slider').addEventListener('input', function (e) {
-  let old_degree_value = parseInt(document.getElementById('rotatex_value').innerHTML)
-  let new_degree_value = parseInt(e.target.value)
+document.addEventListener('touchstart', function (e) {
+  // click outside the cube to hide arrows
+  let ancestor_chain = getAllAncestors(e.target);
+  let i;
+  for(i=0; i<ancestor_chain.length; i++) {
+    if(ancestor_chain[i].className === 'cube') {
+      break
+    }
+  }
+  if(i === ancestor_chain.length && !e.target.classList.contains('arrow') ) {
+    // no .cube in the chain, outside the cube, 
+    // and not in the 4 global arrows
+    // remove all arrows
+    document.querySelectorAll('.arrow').forEach( function (e) {
+      e.remove()
+    });
+  }
+
+  touch_x = e.touches[0].clientX
+  touch_y = e.touches[0].clientY
+  move_direction = 'none'
+  if(e.target === document.getElementsByClassName('spinner')[0]) {
+    document.getElementsByClassName('spinner')[0].style.boxShadow = 'rgb(255, 83, 26) 0px -65px 0px 80px inset'
+  }
+})
+
+document.addEventListener('touchend', function (e) {
+  if(e.target === document.getElementsByClassName('spinner')[0]) {
+    document.getElementsByClassName('spinner')[0].style.boxShadow = 'lightgray 0px -65px 0px 80px inset'
+  }
+})
+
+document.addEventListener('touchmove', function (e) {
+  // when finger is on the spinner, spin; or else move up-down or left-right to rotate X or Y
+  if(document.getElementsByClassName('spinner')[0].style.boxShadow === 'rgb(255, 83, 26) 0px -65px 0px 80px inset') {
+    let old_degree_value = parseInt(document.getElementsByClassName('spinner')[0].style.transform.replace('rotate(', ''))
+    let new_degree_value
+    
+    let spinner_center_x = (document.getElementsByClassName('spinner')[0].getBoundingClientRect().left +
+                          document.getElementsByClassName('spinner')[0].getBoundingClientRect().right) / 2
+    let spinner_center_y = (document.getElementsByClassName('spinner')[0].getBoundingClientRect().top +
+                          document.getElementsByClassName('spinner')[0].getBoundingClientRect().bottom) / 2
+
+    let radian = Math.atan((e.touches[0].clientX - spinner_center_x) / (spinner_center_y - e.touches[0].clientY))
+    // if |degree| > 90 deg
+    if(e.touches[0].clientY > spinner_center_y) {
+      if(e.touches[0].clientX > spinner_center_x){
+          radian += Math.PI
+      } else if(e.touches[0].clientX < spinner_center_x){
+          radian -= Math.PI
+      }
+    }
+    let degree = radian * 180 / Math.PI
+    document.getElementsByClassName('spinner')[0].style.transform = 'rotate(' + parseInt(degree) + 'deg)'
+    new_degree_value = parseInt(degree)
+      
+    let added_arr_matrix3d = getArrayFromMatrixString(rotate3d_to_matrix3d(0, 0, 1, new_degree_value - old_degree_value))
   
-  document.getElementById('rotatex_value').innerHTML = new_degree_value
-  let added_arr_matrix3d = getArrayFromMatrixString(rotate3d_to_matrix3d(1, 0, 0, new_degree_value - old_degree_value))
-  
-  //get current matrix3d
-  let cube = document.getElementsByClassName('cube')[0]
-  let current_arr_matrix3d = getArrayFromMatrixString(window.getComputedStyle(cube).transform)
-  
-  // matrix production to get new transform matrix, added matrix in the back
-  let new_matrix3d = matrix3dProduct(current_arr_matrix3d, added_arr_matrix3d)
-  
-  //update transform
-  cube.style.transform = getStyleFromMatrix3dArray(new_matrix3d)
+    //get current matrix3d
+    let cube = document.getElementsByClassName('cube')[0]
+    let current_arr_matrix3d = getArrayFromMatrixString(window.getComputedStyle(cube).transform)
+    // matrix production to get new transform matrix, added matrix in the back
+    let new_matrix3d = matrix3dProduct(current_arr_matrix3d, added_arr_matrix3d)
+    //update transform
+    cube.style.transform = getStyleFromMatrix3dArray(new_matrix3d)
+  } else {
+    // move up-down or left-right to rotate X or Y
+    if(Math.abs(e.touches[0].clientX - touch_x) >= 10 && Math.abs(e.touches[0].clientY - touch_y) < 10) {
+      // left-right movement, rotateY, one touch only change once
+      if(move_direction === 'none') {
+          move_direction = 'rotateY' 
+          touch_x = e.touches[0].clientX
+      }
+    } else if(Math.abs(e.touches[0].clientX - touch_x) < 10 && Math.abs(e.touches[0].clientY - touch_y) > 10) {
+      // up-down movement, rotateX, one touch only change once
+      if(move_direction === 'none') {
+          move_direction = 'rotateX' 
+          touch_y = e.touches[0].clientY
+      }
+    }
+      
+    if(move_direction === 'rotateY') {
+          let old_degree_value = touch_x
+          let new_degree_value = e.touches[0].clientX
+          touch_x = new_degree_value
+        
+          let added_arr_matrix3d = getArrayFromMatrixString(
+              rotate3d_to_matrix3d(
+                  0, 1, 0, (new_degree_value - old_degree_value) * 180 / (document.body.clientWidth * 0.5) 
+            )
+          )
+
+          //get current matrix3d
+          let cube = document.getElementsByClassName('cube')[0]
+          let current_arr_matrix3d = getArrayFromMatrixString(window.getComputedStyle(cube).transform)
+
+          // matrix production to get new transform matrix, added matrix in the back
+          let new_matrix3d = matrix3dProduct(current_arr_matrix3d, added_arr_matrix3d)
+
+          //update transform
+          cube.style.transform = getStyleFromMatrix3dArray(new_matrix3d)
+        
+    } else if(move_direction === 'rotateX') {
+          let old_degree_value = touch_y
+          let new_degree_value = e.touches[0].clientY
+          touch_y = new_degree_value
+        
+          let added_arr_matrix3d = getArrayFromMatrixString(
+              rotate3d_to_matrix3d(
+                  1, 0, 0, (old_degree_value - new_degree_value) * 180 / (document.body.clientHeight * 0.5) 
+            )
+          )
+
+          //get current matrix3d
+          let cube = document.getElementsByClassName('cube')[0]
+          let current_arr_matrix3d = getArrayFromMatrixString(window.getComputedStyle(cube).transform)
+
+          // matrix production to get new transform matrix, added matrix in the back
+          let new_matrix3d = matrix3dProduct(current_arr_matrix3d, added_arr_matrix3d)
+
+          //update transform
+          cube.style.transform = getStyleFromMatrix3dArray(new_matrix3d)
+    }
+  }
 })
 
 
-document.getElementById('rotatey_slider').addEventListener('input', function (e) {
-  let old_degree_value = parseInt(document.getElementById('rotatey_value').innerHTML)
-  let new_degree_value = parseInt(e.target.value)
-  
-  document.getElementById('rotatey_value').innerHTML = new_degree_value
-  let added_arr_matrix3d = getArrayFromMatrixString(rotate3d_to_matrix3d(0, 1, 0, new_degree_value - old_degree_value))
-  
-  //get current matrix3d
-  let cube = document.getElementsByClassName('cube')[0]
-  let current_arr_matrix3d = getArrayFromMatrixString(window.getComputedStyle(cube).transform)
-  
-  // matrix production to get new transform matrix, added matrix in the back
-  let new_matrix3d = matrix3dProduct(current_arr_matrix3d, added_arr_matrix3d)
-  
-  //update transform
-  cube.style.transform = getStyleFromMatrix3dArray(new_matrix3d)
-})
-
-
-// spinner for rotateZ
+// mouse events
 document.getElementsByClassName('spinner')[0].addEventListener('mouseover', function (e) {
-  if(document.getElementsByClassName('spinner')[0].style.boxShadow !== 'rgb(255, 83, 26) 0px -40px 0px 48px inset') {
-    document.getElementsByClassName('spinner')[0].style.boxShadow = 'gray 0px -40px 0px 48px inset'
+  if(document.getElementsByClassName('spinner')[0].style.boxShadow !== 'rgb(255, 83, 26) 0px -65px 0px 80px inset') {
+    document.getElementsByClassName('spinner')[0].style.boxShadow = 'gray 0px -65px 0px 80px inset'
   }
 })
 
 document.getElementsByClassName('spinner')[0].addEventListener('mouseout', function (e) {
-  if(document.getElementsByClassName('spinner')[0].style.boxShadow !== 'rgb(255, 83, 26) 0px -40px 0px 48px inset') {
-      document.getElementsByClassName('spinner')[0].style.boxShadow = 'lightgray 0px -40px 0px 48px inset'
+  if(document.getElementsByClassName('spinner')[0].style.boxShadow !== 'rgb(255, 83, 26) 0px -65px 0px 80px inset') {
+      document.getElementsByClassName('spinner')[0].style.boxShadow = 'lightgray 0px -65px 0px 80px inset'
   }
 })
 
 document.addEventListener('mousedown', function (e) {
+  global_mouse_down = true
+  // for mousemove================
+  touch_x = e.clientX
+  touch_y = e.clientY
+  move_direction = 'none'
+  //==============================
   if(e.target === document.getElementsByClassName('spinner')[0]) {
-    document.getElementsByClassName('spinner')[0].style.boxShadow = 'rgb(255, 83, 26) 0px -40px 0px 48px inset'
+    document.getElementsByClassName('spinner')[0].style.boxShadow = 'rgb(255, 83, 26) 0px -65px 0px 80px inset'
   }
 })
 
 document.addEventListener('mouseup', function (e) {
+  global_mouse_down = false
   if(e.target === document.getElementsByClassName('spinner')[0]) {
-    document.getElementsByClassName('spinner')[0].style.boxShadow = 'gray 0px -40px 0px 48px inset'
+    document.getElementsByClassName('spinner')[0].style.boxShadow = 'gray 0px -65px 0px 80px inset'
   } else {
-    document.getElementsByClassName('spinner')[0].style.boxShadow = 'lightgray 0px -40px 0px 48px inset'
+    document.getElementsByClassName('spinner')[0].style.boxShadow = 'lightgray 0px -65px 0px 80px inset'
   }
 })
 
 document.addEventListener('mousemove', function (e) {
-  let old_degree_value = parseInt(document.getElementsByClassName('spinner')[0].style.transform.replace('rotate(', ''))
-  let new_degree_value
-  
-  let spinner_center_x = (document.getElementsByClassName('spinner')[0].getBoundingClientRect().left +
-                        document.getElementsByClassName('spinner')[0].getBoundingClientRect().right) / 2
-  let spinner_center_y = (document.getElementsByClassName('spinner')[0].getBoundingClientRect().top +
-                        document.getElementsByClassName('spinner')[0].getBoundingClientRect().bottom) / 2
-  if(document.getElementsByClassName('spinner')[0].style.boxShadow === 'rgb(255, 83, 26) 0px -40px 0px 48px inset') {
+  if(document.getElementsByClassName('spinner')[0].style.boxShadow === 'rgb(255, 83, 26) 0px -65px 0px 80px inset') {
+    let old_degree_value = parseInt(document.getElementsByClassName('spinner')[0].style.transform.replace('rotate(', ''))
+    let new_degree_value
+    
+    let spinner_center_x = (document.getElementsByClassName('spinner')[0].getBoundingClientRect().left +
+                          document.getElementsByClassName('spinner')[0].getBoundingClientRect().right) / 2
+    let spinner_center_y = (document.getElementsByClassName('spinner')[0].getBoundingClientRect().top +
+                          document.getElementsByClassName('spinner')[0].getBoundingClientRect().bottom) / 2
+
     let radian = Math.atan((e.clientX - spinner_center_x) / (spinner_center_y - e.clientY))
     // if |degree| > 90 deg
     if(e.clientY > spinner_center_y) {
@@ -1434,8 +1447,77 @@ document.addEventListener('mousemove', function (e) {
     let new_matrix3d = matrix3dProduct(current_arr_matrix3d, added_arr_matrix3d)
     //update transform
     cube.style.transform = getStyleFromMatrix3dArray(new_matrix3d)
+  } else {
+    if(global_mouse_down === true) {
+      // move up-down or left-right to rotate X or Y (copy and modified from touchmove event)
+      if(Math.abs(e.clientX - touch_x) >= 10 && Math.abs(e.clientY - touch_y) < 10) {
+        //remove all arrows before rotation
+        document.querySelectorAll('.arrow').forEach( function (e) {
+          e.remove()
+        });
+        // left-right movement, rotateY, one touch only change once
+        if(move_direction === 'none') {
+            move_direction = 'rotateY' 
+            touch_x = e.clientX
+        }
+      } else if(Math.abs(e.clientX - touch_x) < 10 && Math.abs(e.clientY - touch_y) > 10) {
+        //remove all arrows before rotation
+        document.querySelectorAll('.arrow').forEach( function (e) {
+          e.remove()
+        });
+        // up-down movement, rotateX, one touch only change once
+        if(move_direction === 'none') {
+            move_direction = 'rotateX' 
+            touch_y = e.clientY
+        }
+      }
+        
+      if(move_direction === 'rotateY') {
+            let old_degree_value = touch_x
+            let new_degree_value = e.clientX
+            touch_x = new_degree_value
+          
+            let added_arr_matrix3d = getArrayFromMatrixString(
+                rotate3d_to_matrix3d(
+                    0, 1, 0, (new_degree_value - old_degree_value) * 180 / (document.body.clientWidth * 0.5) 
+              )
+            )
+
+            //get current matrix3d
+            let cube = document.getElementsByClassName('cube')[0]
+            let current_arr_matrix3d = getArrayFromMatrixString(window.getComputedStyle(cube).transform)
+
+            // matrix production to get new transform matrix, added matrix in the back
+            let new_matrix3d = matrix3dProduct(current_arr_matrix3d, added_arr_matrix3d)
+
+            //update transform
+            cube.style.transform = getStyleFromMatrix3dArray(new_matrix3d)
+          
+      } else if(move_direction === 'rotateX') {
+            let old_degree_value = touch_y
+            let new_degree_value = e.clientY
+            touch_y = new_degree_value
+          
+            let added_arr_matrix3d = getArrayFromMatrixString(
+                rotate3d_to_matrix3d(
+                    1, 0, 0, (old_degree_value - new_degree_value) * 180 / (document.body.clientHeight * 0.5) 
+              )
+            )
+
+            //get current matrix3d
+            let cube = document.getElementsByClassName('cube')[0]
+            let current_arr_matrix3d = getArrayFromMatrixString(window.getComputedStyle(cube).transform)
+
+            // matrix production to get new transform matrix, added matrix in the back
+            let new_matrix3d = matrix3dProduct(current_arr_matrix3d, added_arr_matrix3d)
+
+            //update transform
+            cube.style.transform = getStyleFromMatrix3dArray(new_matrix3d)
+      }
+    }
   }
 })
+
 
 
 // ramdomization start
@@ -1474,14 +1556,102 @@ function random123(step) {
   }
   return arr_result
 }
+ 
 
-document.getElementsByClassName('randomize_button')[0].addEventListener('click', function (){
-  let arr_steps = random123(document.querySelector('.randomize > input').value)
+function translation2matrix3d(x, y, z) { 
+  let tx = x.replace('px', '') - 0
+  let ty = y.replace('px', '') - 0
+  let tz = z.replace('px', '') - 0
+  return [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, tx, ty, tz, 1]
+}
+
+
+
+function preRandomizeEffect() {
+  // randomize for pre-start effect (minor translate3d for each block)
+  // get all blocks
+  let all_blocks = document.querySelectorAll('.cube > div')
+
+  let original_transformations = []
+  for(let i=0; i<all_blocks.length; i++) {
+    // randomized direction(x, y, z) is for translation direction
+    // randomized index 1 : positive translation; index 2 : negative translation; index 3 : 0 translation
+    let random_result = random123(1)[0]
+    let direction = random_result.direction
+    let index = random_result.index
+    let added_translation_matrix
+    let neg_or_pos 
+    switch(index) {
+      case 1:
+          neg_or_pos = '5px'
+          break
+      case 2:
+          neg_or_pos = '-5px'
+          break
+      case 3:
+          neg_or_pos = '0px'
+          break
+    }
+
+    switch(direction) {
+      case 'x':
+          added_translation_matrix = translation2matrix3d(neg_or_pos, '0px', '0px')
+          break
+      case 'y':
+          added_translation_matrix = translation2matrix3d('0px', neg_or_pos, '0px')
+          break
+      case 'z':
+          added_translation_matrix = translation2matrix3d('0px', '0px', neg_or_pos)
+          break
+    }
+    let current_arr_matrix3d
+    if(getComputedStyle(all_blocks[i]).transform === 'none') {
+      current_arr_matrix3d = [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1]
+      let item = {}
+      item.element = all_blocks[i];
+      item.transformation = 'none'
+      original_transformations[original_transformations.length] = item
+    } else {
+      current_arr_matrix3d = getArrayFromMatrixString(getComputedStyle(all_blocks[i]).transform)
+      let item = {}
+      item.element = all_blocks[i];
+      item.transformation = getComputedStyle(all_blocks[i]).transform
+      original_transformations[original_transformations.length] = item
+    }
+    let new_arr_matrix3d = matrix3dProduct(current_arr_matrix3d, added_translation_matrix)
+    all_blocks[i].style.transform = getStyleFromMatrix3dArray(new_arr_matrix3d)
+  }
+  //return value to retain original tranformations
+  return original_transformations
+}
+
+function randomizingRotation() {
+  let arr_steps = random123(10)
   let i=0;
   let flag = setInterval(() => {
     rotateByParam(arr_steps[i].direction, arr_steps[i].index)
     if(++i >= arr_steps.length) {
       clearInterval(flag)
+      document.getElementsByClassName('rotate_gif')[0].src = 'rotate_cube.gif'
     }
   }, 1200);
-})
+}
+
+document.getElementsByClassName('randomizer')[0].addEventListener('click', function (){
+  document.getElementsByClassName('rotate_gif')[0].src = 'rotate_cube_color.gif' 
+  let count = 1
+  // get the very first original tranformations
+  let original_transformations = preRandomizeEffect()
+  let flag = setInterval(() => {
+    preRandomizeEffect()
+    if(count >= 19) {
+      clearInterval(flag)
+      //reset transformations
+      for(let i=0; i<original_transformations.length; i++) {
+        original_transformations[i].element.style.transform = original_transformations[i].transformation
+      }
+      randomizingRotation()
+    }
+    count++
+  }, 100)
+}) 
