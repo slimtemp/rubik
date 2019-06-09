@@ -1436,6 +1436,7 @@ document.getElementsByClassName('spinner')[0].addEventListener('mouseout', funct
   }
 })
 
+
 document.addEventListener('mousedown', function (e) {
   global_mouse_down = true
   // for mousemove================
@@ -1451,6 +1452,7 @@ document.addEventListener('mousedown', function (e) {
     document.getElementsByClassName('spinner')[0].style.boxShadow = 'rgb(255, 83, 26) 0px -65px 0px 80px inset'
   }
 })
+
 
 document.addEventListener('mouseup', function (e) {
   global_mouse_down = false
@@ -1688,7 +1690,7 @@ function randomizingRotation() {
   }, 1200);
 }
 
-document.getElementsByClassName('randomizer')[0].addEventListener('click', function (){
+document.getElementsByClassName('randomizer')[0].addEventListener('mousedown', function (){
   document.getElementsByClassName('rotate_gif')[0].style.display = 'none'
   document.getElementsByClassName('rotate_gif_color')[0].style.display = 'block'
   let count = 1
